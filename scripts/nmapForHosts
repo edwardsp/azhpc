@@ -5,4 +5,4 @@ iprange="$(echo $myip | sed 's/\.[0-9]*$/\.\*/g')"
 nmap -sn $iprange | grep -Eo '([0-9][0-9.]+$)' | grep -v "$(echo $myip | sed 's/\./\\\./g')$" > $HOME/bin/hostiplist
 for i in $(<$HOME/bin/hostiplist); do ssh $i hostname; done > $HOME/bin/hostlist
 
-echo "Found $(wc -l hostlist) hosts."
+echo "Found $(wc -l $HOME/bin/hostlist) hosts."
