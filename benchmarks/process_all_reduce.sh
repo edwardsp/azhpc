@@ -24,7 +24,7 @@ for MSG_SZ in 8 16; do
 			echo -n "${NPROCS}"
 			for PPN in $PPN_LIST; do
 				NP=$(bc <<< "$NPROCS * $PPN")
-				echo -n " $(grep "  $MSG_SZ         1000 " IMB_Allreduce_${NITER}_${NP}_${NPROCS}x${PPN}_${REP}${NAME_TAG}.log | sed 's/  */ /g' | cut -d' ' -f 6)"
+				echo -n " $(grep -E " $MSG_SZ[ ]+$NITER " IMB_Allreduce_${NITER}_${NP}_${NPROCS}x${PPN}_${REP}${NAME_TAG}.log | sed 's/  */ /g' | cut -d' ' -f 6)"
 			done
 			echo
 		done
