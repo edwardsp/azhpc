@@ -17,7 +17,7 @@ mkdir /mnt/resource/scratch/INSTALLERS
 mkdir /mnt/resource/scratch/benchmark
 
 yum --enablerepo=extras install -y -q epel-release
-yum install -y -q nfs-utils nmap htop pdsh screen git
+yum install -y -q nfs-utils nmap htop pdsh screen git psmisc
 
 cat << EOF >> /etc/exports
 /home $localip.*(rw,sync,no_root_squash,no_all_squash)
