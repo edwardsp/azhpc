@@ -1,22 +1,21 @@
 #!/bin/bash
 USER=$1
 LICIP=$2
-DOWN=$3
 HOST=$(hostname)
-echo $USER,$LICIP,$HOST,$DOWN
+echo $USER,$LICIP,$HOST
+
+sudo yum groupinstall -y "X Window System"
 
 mkdir /mnt/resource/scratch/ansys
 mkdir /mnt/resource/scratch/ansys/benchmark
 mkdir /mnt/resource/scratch/ansys/INSTALLERS
 mkdir /mnt/resource/scratch/ansys/INSTALLERS/ANSYS
 
-wget -q http://azbenchmarkstorage.blob.core.windows.net/ansysbenchmarkstorage/$DOWN -O /mnt/resource/scratch/ansys/benchmark/$DOWN
 wget -q https://raw.githubusercontent.com/tanewill/5clickTemplates/master/RawANSYSCluster/runme.jou -O /mnt/resource/scratch/ansys/benchmark/runme.jou
 wget -q http://azbenchmarkstorage.blob.core.windows.net/ansysbenchmarkstorage/ANSYS.tgz -O /mnt/resource/scratch/ansys/ANSYS.tgz
 tar -xzf /mnt/resource/scratch/ansys/ANSYS.tgz -C /mnt/resource/scratch/ansys/INSTALLERS
-tar -xvf /mnt/resource/scratch/ansys/benchmark/$DOWN -C /mnt/resource/scratch/ansys/benchmark
-mv /mnt/resource/scratch/ansys/benchmark/*.dat.gz /mnt/resource/scratch/ansys/benchmark/benchmark.dat.gz
-mv /mnt/resource/scratch/ansys/benchmark/*.cas.gz /mnt/resource/scratch/ansys/benchmark/benchmark.cas.gz
+#mv /mnt/resource/scratch/ansys/benchmark/*.dat.gz /mnt/resource/scratch/ansys/benchmark/benchmark.dat.gz
+#mv /mnt/resource/scratch/ansys/benchmark/*.cas.gz /mnt/resource/scratch/ansys/benchmark/benchmark.cas.gz
 
 cd /mnt/resource/scratch/ansys/INSTALLERS/ANSYS/
 mkdir -p /mnt/resource/scratch/ansys/applications/ansys_inc/shared_files/licensing/
