@@ -3,9 +3,8 @@ LICIP=$1
 HOST=`hostname`
 echo $LICIP,$HOST
 
-mkdir /mnt/resource/scratch/
-mkdir /mnt/resource/scratch/applications
-mkdir /mnt/resource/scratch/INSTALLERS
+mkdir -p /mnt/resource/scratch/applications
+mkdir -p /mnt/resource/scratch/INSTALLERS
 
 cd /mnt/resource/scratch/INSTALLERS
 wget -q http://azbenchmarkstorage.blob.core.windows.net/cdadapcobenchmarkstorage/STAR-CCM+11.04.012_01_linux-x86_64-r8.tar.gz -O - | tar zx
