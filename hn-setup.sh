@@ -11,10 +11,7 @@ cat << EOF >> /etc/security/limits.conf
 EOF
 
 mkdir -p /mnt/resource/scratch
-mkdir /mnt/resource/scratch/
-mkdir /mnt/resource/scratch/applications
-mkdir /mnt/resource/scratch/INSTALLERS
-mkdir /mnt/resource/scratch/benchmark
+chmod a+rwx /mnt/resource/scratch
 
 yum --enablerepo=extras install -y -q epel-release
 yum install -y -q nfs-utils nmap htop pdsh screen git psmisc
