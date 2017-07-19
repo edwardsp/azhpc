@@ -18,7 +18,7 @@ for REP in $(seq $REPEATS); do
 	for NPROCS in $NPROCS_LIST; do
 		for PPN in $PPN_LIST; do
 			NP=$(bc <<< "$NPROCS * $PPN")
-			mpirun -np $NP -ppn $PPN -machinefile $HOME/bin/hostlist $MPI_FLAGS IMB-MPI1 Allreduce -iter ${NITER} -npmin $NP -msglog 3:4 -time 1000000 2>&1 | tee IMB_Allreduce_${NITER}_${NP}_${NPROCS}x${PPN}_${REP}${NAME_TAG}.log
+			mpirun -np $NP -ppn $PPN -hostfile $HOME/bin/hostlist $MPI_FLAGS IMB-MPI1 Allreduce -iter ${NITER} -npmin $NP -msglog 3:4 -time 1000000 2>&1 | tee IMB_Allreduce_${NITER}_${NP}_${NPROCS}x${PPN}_${REP}${NAME_TAG}.log
 		done
 	done
 done
