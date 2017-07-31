@@ -3,6 +3,8 @@ LICIP=$1
 HOST=`hostname`
 echo $LICIP,$HOST
 
+sudo yum groupinstall -y "X Window System"
+
 mkdir -p /mnt/resource/scratch/applications
 mkdir -p /mnt/resource/scratch/INSTALLERS
 
