@@ -102,5 +102,16 @@ cd /home/$USER/bin
 for i in /home/$USER/azhpc/scripts/*; do
 	ln -s $i
 done
-	
+
+# install the azure cli
+sudo yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
+wget https://azurecliprod.blob.core.windows.net/install.py
+chmod +x install.py
+cat <<EOF | ./install.py
+
+
+Y
+
+EOF
+rm install.py
 
