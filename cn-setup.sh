@@ -10,7 +10,7 @@ $HEADNODE:/mnt/resource/scratch    /mnt/resource/scratch   nfs defaults 0 0
 EOF
 
 yum --enablerepo=extras install -y -q epel-release
-yum install -y -q nfs-utils htop pdsh
+yum install -y -q nfs-utils htop pdsh psmisc
 setsebool -P use_nfs_home_dirs 1
 
 mount -a
