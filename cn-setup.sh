@@ -12,16 +12,16 @@ EOF
 
 if [ "$(grep ubuntu /etc/os-release 2>/dev/null)" != "" ]
 then
-    apt-get install nfs-common nmap htop pdsh git
+    apt-get install -y nfs-common nmap htop pdsh git
     
     echo "deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe" >> /etc/apt/sources.list
     apt-get update
-    apt-get install linux-azure linux-image-extra-4.11.0-1006-azure
-    apt-get install libdapl2 libmlx4-1
+    apt-get install -y linux-azure linux-image-extra-4.11.0-1006-azure
+    apt-get install -y libdapl2 libmlx4-1
 
     git clone https://github.com/Azure/WALinuxAgent.git
     cd WALinuxAgent
-    apt-get install python3-pip
+    apt-get install -y python3-pip
     python3 ./setup.py install --force
     systemctl daemon-reload
     service walinuxagent restart
