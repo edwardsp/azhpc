@@ -16,8 +16,13 @@ mkdir /mnt/resource/scratch/applications
 mkdir /mnt/resource/scratch/INSTALLERS
 mkdir /mnt/resource/scratch/benchmark
 
-yum --enablerepo=extras install -y -q epel-release
-yum install -y -q nfs-utils nmap htop pdsh screen git
+if [ "$(grep ubuntu /etc/os-release" 2>/dev/null) != "" ]
+then
+    echo "TODO"
+else
+    yum --enablerepo=extras install -y -q epel-release
+    yum install -y -q nfs-utils nmap htop pdsh screen git
+fi
 
 cat << EOF >> /etc/exports
 /home $localip.*(rw,sync,no_root_squash,no_all_squash)

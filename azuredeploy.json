@@ -22,6 +22,17 @@
 				"description": "String used as a base for naming resources. Must be 3-10 characters in length and globally unique across Azure. A hash is prepended to this string for some resources, and resource-specific information is appended."
 			}
 		},
+		"computeNodeImage": {
+			"type": "string",
+			"defaultValue": "CentOS_7.1",
+			"allowedValues": [
+				"CentOS_7.1",
+				"Ubuntu_1604"
+			],
+			"metadata": {
+				"description": "The VM image of the compute nodes"
+			}
+		},
 		"instanceCount": {
 			"maxValue": 100,
 			"type": "Int",
@@ -54,13 +65,21 @@
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
 		"scriptUrl": "https://raw.githubusercontent.com/edwardsp/azhpc/master/",
-		"osType": {
-			"publisher": "OpenLogic",
-			"offer": "CentOS-HPC",
-			"sku": "7.1",
-			"version": "latest"
+		"hpcImageTypes":{
+			"CentOS_7.1": {
+				"publisher": "OpenLogic",
+				"offer": "CentOS",
+				"sku": "7.1",
+				"version": "latest"
+			},
+			"Ubuntu_1604": {
+				"publisher": "Canonical",
+				"offer": "UbuntuServer",
+				"sku": "16.04-LTS",
+				"version": "latest"
+			}
 		},
-		"imageReference": "[variables('osType')]",
+		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
 		"JBoxType": {
 			"publisher": "OpenLogic",
 			"offer": "CentOS",
