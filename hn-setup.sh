@@ -13,42 +13,8 @@ EOF
 mkdir -p /mnt/resource/scratch
 chmod a+rwx /mnt/resource/scratch
 
-if [ "$(grep ubuntu /etc/os-release" 2>/dev/null) != "" ]
-then
-    apt-get install nfs-common nmap htop pdsh screen git
-    
-    echo "deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe" >> /etc/apt/sources.list
-    apt-get update
-    apt-get install linux-azure linux-image-extra-4.11.0-1006-azure
-    apt-get install libdapl2 libmlx4-1
-
-    git clone https://github.com/Azure/WALinuxAgent.git
-    cd WALinuxAgent
-    apt-get install python3-pip
-    python3 ./setup.py install --force
-    systemctl daemon-reload
-    service walinuxagent restart
-    cat << EOF >> /etc/waagent.conf
-OS.EnableRDMA=y
-OS.UpdateRdmaDriver=y
-EOF
-else
-    yum --enablerepo=extras install -y -q epel-release
-    yum install -y -q nfs-utils nmap htop pdsh screen git
-
-    # install the azure cli
-    sudo yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
-    wget https://azurecliprod.blob.core.windows.net/install.py
-    chmod +x install.py
-    cat <<EOF | ./install.py
-
-
-Y
-
-EOF
-    rm install.py
-
-fi
+yum --enablerepo=extras install -y -q epel-release
+yum install -y -q nfs-utils nmap htop pdsh screen git
 
 cat << EOF >> /etc/exports
 /home $localip.*(rw,sync,no_root_squash,no_all_squash)
@@ -136,3 +102,15 @@ cd /home/$USER/bin
 for i in /home/$USER/azhpc/scripts/*; do
 	ln -s $i
 done
+
+# install the azure cli
+yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
+wget https://azurecliprod.blob.core.windows.net/install.py
+chmod +x install.py
+cat <<EOF | ./install.py
+
+
+Y
+
+EOF
+rm install.py
