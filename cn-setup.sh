@@ -25,10 +25,13 @@ then
     python3 ./setup.py install --force
     systemctl daemon-reload
     service walinuxagent restart
+    # not entirely sure this is being executed
     cat << EOF >> /etc/waagent.conf
 OS.EnableRDMA=y
 OS.UpdateRdmaDriver=y
 EOF
+    # now it needs a restart followed by:
+    #sudo modprobe rdma_ucm
 else
     yum --enablerepo=extras install -y -q epel-release
     yum install -y -q nfs-utils htop pdsh psmisc
