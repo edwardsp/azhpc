@@ -4,6 +4,11 @@ HEADNODE=10.0.0.4
 
 mkdir -p /mnt/resource/scratch
 
+cat << EOF >> /etc/security/limits.conf
+*               hard    memlock         unlimited
+*               soft    memlock         unlimited
+EOF
+
 cat << EOF >> /etc/fstab
 $HEADNODE:/home    /home   nfs defaults 0 0
 $HEADNODE:/mnt/resource/scratch    /mnt/resource/scratch   nfs defaults 0 0
