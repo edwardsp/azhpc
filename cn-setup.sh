@@ -19,6 +19,7 @@ then
     apt-get install -y linux-azure linux-image-extra-4.11.0-1006-azure
     apt-get install -y libdapl2 libmlx4-1
 
+    cd /root
     git clone https://github.com/Azure/WALinuxAgent.git
     cd WALinuxAgent
     apt-get install -y python3-pip
