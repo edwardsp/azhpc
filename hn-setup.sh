@@ -104,13 +104,14 @@ for i in /home/$USER/azhpc/scripts/*; do
 done
 
 # install the azure cli
+cd /home/$USER
 yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
 wget https://azurecliprod.blob.core.windows.net/install.py
-chmod +x install.py
-cat <<EOF | ./install.py
+chmod a+rx install.py
+cat <<EOF | su - hpcuser -c ./install.py
 
 
 Y
 
 EOF
-rm install.py
+rm -f install.py
