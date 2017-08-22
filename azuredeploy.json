@@ -68,7 +68,7 @@
 		"hpcImageTypes":{
 			"CentOS_7.1": {
 				"publisher": "OpenLogic",
-				"offer": "CentOS",
+				"offer": "CentOS-HPC",
 				"sku": "7.1",
 				"version": "latest"
 			},
