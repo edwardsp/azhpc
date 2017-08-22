@@ -24,9 +24,9 @@
 		},
 		"computeNodeImage": {
 			"type": "string",
-			"defaultValue": "CentOS_7.1",
+			"defaultValue": "CentOS-HPC_7.1",
 			"allowedValues": [
-				"CentOS_7.1",
+				"CentOS-HPC_7.1",
 				"Ubuntu_1604"
 			],
 			"metadata": {
