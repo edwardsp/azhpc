@@ -8,7 +8,8 @@
 				"Standard_A8",
 				"Standard_A9",
 				"Standard_H16r",
-				"Standard_H16mr"
+				"Standard_H16mr",
+				"Standard_NC24r"
 			],
 			"type": "String",
 			"metadata": {
