@@ -67,7 +67,7 @@
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
 		"scriptUrl": "https://raw.githubusercontent.com/edwardsp/azhpc/master/",
 		"hpcImageTypes":{
-			"CentOS_7.1": {
+			"CentOS-HPC_7.1": {
 				"publisher": "OpenLogic",
 				"offer": "CentOS-HPC",
 				"sku": "7.1",
