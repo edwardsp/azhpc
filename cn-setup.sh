@@ -2,6 +2,8 @@
 
 HEADNODE=10.0.0.4
 
+sed -i 's/^ResourceDisk/\#ResourceDisk/g' /etc/waagent.conf
+
 mkdir -p /mnt/resource/scratch
 
 cat << EOF >> /etc/security/limits.conf
