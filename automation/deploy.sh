@@ -14,9 +14,9 @@ function execute {
 	SECONDS=0
 	echo -n "Executing: $2"
 	for a in "${@:3}"; do
-		echo -n " '$(echo $a | tr '\n' ' ')'"
+		echo -n " '$(echo -n $a | tr '\n' ' ')'"
 	done
-	$2 "${@:3}" | tee $LOGDIR/${task}.log
+	$2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
 	duration=$SECONDS
 	echo "$task $duration" | tee -a $LOGDIR/times.log
 }
@@ -61,7 +61,7 @@ execute "deploy_azhpc" az group deployment create \
     --template-uri "https://raw.githubusercontent.com/edwardsp/azhpc/master/azuredeploy.json" \
     --parameters "$parameters"
 
-public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn)
+public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 
