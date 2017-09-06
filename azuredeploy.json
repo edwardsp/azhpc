@@ -51,9 +51,8 @@
 	},
 	"variables": {
 		"resourceLocation": "[resourceGroup().location]",
-		"namingInfix": "[toLower(substring(concat(parameters('vmssName'), uniqueString(resourceGroup().id)), 0, 9))]",
-		"longNamingInfix": "[toLower(parameters('vmssName'))]",
-		"jumpBoxName": "[concat(variables('longNamingInfix'),'jb')]",
+		"namingInfix": "[toLower(parameters('vmssName'))]",
+		"jumpBoxName": "[concat(variables('namingInfix'),'jb')]",
 		"jumpBoxIPConfigName": "[concat(variables('jumpBoxName'), 'ipconfig')]",
 		"jumpBoxNicName": "[concat(variables('jumpBoxName'), 'nic')]",
 		"addressPrefix": "10.0.0.0/16",
@@ -129,7 +128,7 @@
 			"properties": {
 				"publicIPAllocationMethod": "Dynamic",
 				"dnsSettings": {
-					"domainNameLabel": "[variables('longNamingInfix')]"
+					"domainNameLabel": "[variables('namingInfix')]"
 				}
 			}
 		},
