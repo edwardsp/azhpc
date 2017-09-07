@@ -16,6 +16,7 @@ function execute {
 	for a in "${@:3}"; do
 		echo -n " '$(echo -n $a | tr '\n' ' ')'"
 	done
+	echo
 	$2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
 	duration=$SECONDS
 	echo "$task $duration" | tee -a $LOGDIR/times.log
