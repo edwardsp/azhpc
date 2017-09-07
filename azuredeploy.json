@@ -211,7 +211,7 @@
 						"autoUpgradeMinorVersion": true,
 						"settings": {
               "fileUris": [
-                "[uri(deployment().templateLink.uri, 'hn-setup.sh')]"
+                "[uri(deployment().properties.templateLink.uri, 'hn-setup.sh')]"
               ],
 							"commandToExecute": "bash hn-setup.sh"
 						}
@@ -258,7 +258,7 @@
 									"autoUpgradeMinorVersion": true,
 									"settings": {
                     "fileUris": [
-                      "[uri(deployment().templateLink.uri, 'cn-setup.sh')]"
+                      "[uri(deployment().properties.templateLink.uri, 'cn-setup.sh')]"
                     ],
 										"commandToExecute": "bash cn-setup.sh"
 									}
