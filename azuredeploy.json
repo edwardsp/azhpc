@@ -65,7 +65,6 @@
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
-		"scriptUrl": "https://raw.githubusercontent.com/edwardsp/azhpc/master/",
 		"hpcImageTypes":{
 			"CentOS-HPC_7.1": {
 				"publisher": "OpenLogic",
@@ -171,7 +170,7 @@
 					"computerName": "[variables('jumpBoxName')]",
 					"adminUsername": "hpcuser",
 					"linuxConfiguration": {
-						"disablePasswordAuthentication": "true",
+						"disablePasswordAuthentication": true,
 						"ssh": {
 							"publicKeys": [
 								{
@@ -211,11 +210,10 @@
 						"typeHandlerVersion": "2.0",
 						"autoUpgradeMinorVersion": true,
 						"settings": {
-							"fileUris": [
-								"[concat(variables('scriptUrl'), 'hn-setup.sh')]"
-							],
-							"commandToExecute": "bash hn-setup.sh",
-							"timestamp": 12345
+              "fileUris": [
+                "[uri(deployment().templateLink.uri, 'hn-setup.sh')]"
+              ],
+							"commandToExecute": "bash hn-setup.sh"
 						}
 					},
 					"dependsOn": [
@@ -238,7 +236,7 @@
 			"apiVersion": "[variables('computeApiVersion')]",
 			"location": "[variables('resourceLocation')]",
 			"properties": {
-				"overprovision": "true",
+				"overprovision": true,
 				"upgradePolicy": {
 					"mode": "Manual"
 				},
@@ -259,11 +257,10 @@
 									"typeHandlerVersion": "2.0",
 									"autoUpgradeMinorVersion": true,
 									"settings": {
-										"fileUris": [
-											"[concat(variables('scriptUrl'), 'cn-setup.sh')]"
-										],
-										"commandToExecute": "bash cn-setup.sh",
-										"timestamp": 12345
+                    "fileUris": [
+                      "[uri(deployment().templateLink.uri, 'cn-setup.sh')]"
+                    ],
+										"commandToExecute": "bash cn-setup.sh"
 									}
 								}
 							}
@@ -272,14 +269,24 @@
 					"osProfile": {
 						"computerNamePrefix": "[variables('namingInfix')]",
 						"adminUsername": "hpcuser",
-						"adminPassword": "Microsoft123"
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "/home/hpcuser/.ssh/authorized_keys",
+                    "keyData": "[parameters('rsaPublicKey')]"
+                  }
+                ]
+              }
+            }
 					},
 					"networkProfile": {
 						"networkInterfaceConfigurations": [
 							{
 								"name": "[variables('nicName')]",
 								"properties": {
-									"primary": "true",
+									"primary": true,
 									"ipConfigurations": [
 										{
 											"name": "[variables('ipConfigName')]",
