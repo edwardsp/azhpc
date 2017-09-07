@@ -95,7 +95,7 @@ EOF
 chown $USER:$USER /home/$USER/.screenrc
 
 cd /home/$USER
-git clone https://github.com/edwardsp/azhpc.git
+git clone https://github.com/xpillons/azhpc.git
 chown $USER:$USER -R azhpc
 chmod +x azhpc/scripts/*
 cd /home/$USER/bin
@@ -104,14 +104,14 @@ for i in /home/$USER/azhpc/scripts/*; do
 done
 
 # install the azure cli
-cd /home/$USER
-yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
-wget https://azurecliprod.blob.core.windows.net/install.py
-chmod a+rx install.py
-cat <<EOF | su - hpcuser -c ./install.py
-
-
-Y
-
-EOF
-rm -f install.py
+#cd /home/$USER
+#yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
+#wget https://azurecliprod.blob.core.windows.net/install.py
+#chmod a+rx install.py
+#cat <<EOF | su - hpcuser -c ./install.py
+#
+#
+#Y
+#
+#EOF
+#rm -f install.py
