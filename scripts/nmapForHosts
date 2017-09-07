@@ -5,4 +5,14 @@ iprange="$(echo $myip | sed 's/\.[0-9]*$/\.\*/g')"
 nmap -sn $iprange | grep -Eo '([0-9][0-9.]+$)' | grep -v "$(echo $myip | sed 's/\./\\\./g')$" > $HOME/bin/hostiplist
 for i in $(<$HOME/bin/hostiplist); do ssh $i hostname; done > $HOME/bin/hostlist
 
-echo "Found $(wc -l $HOME/bin/hostlist) hosts."
+sshin=$(wc -l $HOME/bin/hostlist | awk -F'[ ]' '{print $1}')
+ipcount=$(wc -l $HOME/bin/hostiplist | awk -F'[ ]' '{print $1}')
+
+if [ $sshin -eq $ipcount ]; then
+  status="OK"
+else
+  status="KO"
+fi
+
+echo "status=$status;hosts=$ipcount;sshin=$sshin"
+
