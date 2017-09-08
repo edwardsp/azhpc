@@ -95,7 +95,9 @@ execute "deploy_azhpc" az group deployment create \
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
-working_hosts=$(grep "Found" $(get_log "get_hosts") | cut -d' ' -f2)
+working_hosts=$(grep "hosts" $(get_log "get_hosts") | cut -d'=' -f3 | cut -d ';' -f1)
+echo ""
+echo "'${working_hosts}', '${instanceCount}'"
 retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
 	sleep 60
