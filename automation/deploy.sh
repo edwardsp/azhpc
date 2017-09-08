@@ -16,8 +16,9 @@ function required_envvars {
         fi
 }
 
-echo "Reading parameters from: $1"
-source $1
+paramsFile=$1
+echo "Reading parameters from: $paramsFile"
+source $paramsFile
 required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
 
 benchmarkScript=$2
@@ -26,8 +27,12 @@ source $benchmarkScript
 
 scriptname=$(basename "$0")
 scriptname="${scriptname%.*}"
+paramsname=$(basename "$paramsFile")
+paramsname="${paramsname%.*}"
+benchmarkname=$(basename "$benchmarkScript")
+benchmarkname="${benchmarkname%.*}"
 timestamp=$(date +%Y-%m-%d_%H-%M-%S)
-LOGDIR=${scriptname}_${timestamp}
+LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 
 function execute {
