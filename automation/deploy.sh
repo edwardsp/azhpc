@@ -18,7 +18,7 @@ function required_envvars {
 
 echo "Reading parameters from: $1"
 source $1
-required_envvars resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
+required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
 
 benchmarkScript=$2
 echo "Benchmark script: $benchmarkScript"
