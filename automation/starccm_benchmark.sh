@@ -8,7 +8,7 @@ function run_benchmark() {
     numProcs=$(bc <<< "$instanceCount * $processesPerNode")
 
     nps=
-    for n in ${numberOfNodesToTest[@]}; do
+    for n in $numberOfNodesToTest; do
         if [ "$nps" != "" ]; then
             nps="${nps},"
         fi
