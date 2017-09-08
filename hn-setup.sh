@@ -1,5 +1,10 @@
 #!/bin/bash
 
+scriptUri=$1
+githubUser=$(echo "$scriptUri" | cut -d'/' -f4)
+githubRepo=$(echo "$scriptUri" | cut -d'/' -f5)
+githubBranch=$(echo "$scriptUri" | cut -d'/' -f6)
+
 USER=hpcuser
 
 IP=`ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
@@ -95,7 +100,7 @@ EOF
 chown $USER:$USER /home/$USER/.screenrc
 
 cd /home/$USER
-git clone https://github.com/xpillons/azhpc.git
+git clone -b $githubBranch https://github.com/$githubUser/$githubRepo.git
 chown $USER:$USER -R azhpc
 chmod +x azhpc/scripts/*
 cd /home/$USER/bin
@@ -103,15 +108,4 @@ for i in /home/$USER/azhpc/scripts/*; do
 	ln -s $i
 done
 
-# install the azure cli
-#cd /home/$USER
-#yum check-update; sudo yum install -y gcc libffi-devel python-devel openssl-devel
-#wget https://azurecliprod.blob.core.windows.net/install.py
-#chmod a+rx install.py
-#cat <<EOF | su - hpcuser -c ./install.py
-#
-#
-#Y
-#
-#EOF
-#rm -f install.py
+rm -f install.py

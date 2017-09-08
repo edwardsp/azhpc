@@ -210,10 +210,11 @@
 						"typeHandlerVersion": "2.0",
 						"autoUpgradeMinorVersion": true,
 						"settings": {
-              "fileUris": [
-                "[uri(deployment().properties.templateLink.uri, 'hn-setup.sh')]"
-              ],
-							"commandToExecute": "bash hn-setup.sh"
+							"fileUris": [
+								"[uri(deployment().properties.templateLink.uri, 'hn-setup.sh')]"
+							],
+							"commandToExecute": "[concat('bash hn-setup.sh ', deployment().properties.templateLink.uri)]",
+							"timestamp": 12345
 						}
 					},
 					"dependsOn": [
@@ -257,10 +258,11 @@
 									"typeHandlerVersion": "2.0",
 									"autoUpgradeMinorVersion": true,
 									"settings": {
-                    "fileUris": [
-                      "[uri(deployment().properties.templateLink.uri, 'cn-setup.sh')]"
-                    ],
-										"commandToExecute": "bash cn-setup.sh"
+										"fileUris": [
+											"[uri(deployment().properties.templateLink.uri, 'cn-setup.sh')]"
+										],
+										"commandToExecute": "bash cn-setup.sh",
+										"timestamp": 12345
 									}
 								}
 							}
@@ -269,17 +271,7 @@
 					"osProfile": {
 						"computerNamePrefix": "[variables('namingInfix')]",
 						"adminUsername": "hpcuser",
-            "linuxConfiguration": {
-              "disablePasswordAuthentication": true,
-              "ssh": {
-                "publicKeys": [
-                  {
-                    "path": "/home/hpcuser/.ssh/authorized_keys",
-                    "keyData": "[parameters('rsaPublicKey')]"
-                  }
-                ]
-              }
-            }
+						"adminPassword": "Microsoft123"
 					},
 					"networkProfile": {
 						"networkInterfaceConfigurations": [

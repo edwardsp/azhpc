@@ -89,7 +89,7 @@ EOF
 # deploy azhpc
 execute "deploy_azhpc" az group deployment create \
     --resource-group "$resource_group" \
-    --template-uri "https://raw.githubusercontent.com/xpillons/azhpc/master/azuredeploy.json" \
+    --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
