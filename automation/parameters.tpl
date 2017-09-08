@@ -1,6 +1,7 @@
 my_uid=$(uuidgen | cut -c1-6)
 
 resource_group=azhpc-${my_uid}
+location="North Central US"
 vmSku=Standard_H16r
 vmssName=az${my_uid}
 computeNodeImage=CentOS-HPC_7.1
