@@ -5,8 +5,8 @@ iprange=${myip%.*}.*
 nmap -sn $iprange | grep -Eo '([0-9][0-9.]+$)' | grep -v "^$myip$" > $HOME/bin/hostiplist
 for i in $(<$HOME/bin/hostiplist); do ssh $i hostname; done > $HOME/bin/hostlist
 
-sshin=$(cat $HOME/bin/hostlist | wc -l)
-ipcount=$(cat $HOME/bin/hostiplist | wc -l)
+sshin=$(wc -l < $HOME/bin/hostlist)
+ipcount=$(wc -l < $HOME/bin/hostiplist)
 
 if [ $sshin -eq $ipcount ]; then
   status="OK"
