@@ -48,6 +48,12 @@ function execute {
         echo "$task $duration" | tee -a $LOGDIR/times.log
 }
 
+function get_files {
+        for fname in "$@"; do
+                scp hpcuser@${public_ip} $fname $LOGDIR
+        done
+}
+
 function get_log {
 	task=$1
 	echo $LOGDIR/${task}.log
