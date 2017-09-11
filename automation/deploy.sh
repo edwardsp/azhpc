@@ -50,7 +50,7 @@ function execute {
 
 function get_files {
         for fname in "$@"; do
-                scp hpcuser@${public_ip} $fname $LOGDIR
+                scp hpcuser@${public_ip}:$fname $LOGDIR
         done
 }
 
