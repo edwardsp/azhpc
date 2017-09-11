@@ -107,7 +107,7 @@ retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         sleep 60
         execute "get_hosts_retry_$retry" ssh hpcuser@${public_ip} nmapForHosts
-        working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
+        working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "get_hosts_retry_$retry"))
         let retry=$retry+1
 done
 
