@@ -5,5 +5,7 @@ function run_benchmark() {
 	
 	# run HPL. problem size 69120 is allocating 36 GB. For 64GB use 92160.
 	# 
-	execute "run_hpl" ssh hpcuser@${public_ip} "pdsh 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n 69120 -p 1 -q 2 -nb 192' | grep WC00C2R2"
+    for i in $(seq 1 5); do	
+		execute "run_hpl${i}" ssh hpcuser@${public_ip} "pdsh 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n 69120 -p 1 -q 2 -nb 192 | grep WC00C2R2'"
+	done
 }
