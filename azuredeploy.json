@@ -28,8 +28,7 @@
 			"defaultValue": "CentOS-HPC_7.1",
 			"allowedValues": [
 				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3",
-				"Ubuntu_1604"
+				"CentOS-HPC_7.3"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
