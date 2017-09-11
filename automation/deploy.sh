@@ -101,8 +101,6 @@ public_ip=$(az network public-ip list --resource-group "$resource_group" --query
 
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
 working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
-echo ""
-echo "'${working_hosts}', '${instanceCount}'"
 retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         sleep 60
