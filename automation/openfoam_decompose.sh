@@ -16,7 +16,8 @@ function benchmark {
                 --file $decomposedCase.tar \
                 --name $storageBenchmarkPath/$decomposedCase.tar \
                 --sas "$storageSasKey"
-            execute "delete_$decomposedCase" rm $decomposedCase.tar
+            execute "delete_$decomposedCase_dir" rm -rf $decomposedCase
+            execute "delete_$decomposedCase_tarfile" rm $decomposedCase.tar
         done
     done
 
