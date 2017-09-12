@@ -34,6 +34,7 @@ benchmarkname="${benchmarkname%.*}"
 timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
+cp $paramsFile $LOGDIR
 
 function execute {
         task=$1
@@ -106,12 +107,12 @@ execute "deploy_azhpc" az group deployment create \
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
-working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
+working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
 retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         sleep 60
         execute "get_hosts_retry_$retry" ssh hpcuser@${public_ip} nmapForHosts
-        working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "get_hosts_retry_$retry"))
+        working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts_retry_$retry"))
         let retry=$retry+1
 done
 
