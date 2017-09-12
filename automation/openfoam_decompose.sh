@@ -5,8 +5,8 @@ function run_benchmark {
     execute "install_openfoam" ssh hpcuser@${public_ip} azhpc/install/install_openfoam.sh
     execute "download_case" ssh hpcuser@${public_id} "cd /mnt/resource/scratch && wget https://$storageAccountName.blob.core.windows.net/$storageContainerName/$storageBenchmarkPath/$storageBenchmarkName.tar -O - | tar xvf"
 
-    for NNODES in nnodes_list; do
-        for PPN in ppn_list; do
+    for NNODES in $nnodes_list; do
+        for PPN in $ppn_list; do
             execute "create_case_${NNODES}x${PPN}" ssh hpcuser@${public_ip} "ssh \$(cat bin/hostlist) 'cd /mnt/resource/scratch && ./$storageBenchmarkName/create_case.sh $NNODES $PPN'"
             decomposedCase=${storageBenchmarkName}_${NNODES}x${PPN}
             execute "copy_$decomposedCase" scp hpcuser@${public_ip}:/mnt/resource/scratch/$decomposedCase.tar .
