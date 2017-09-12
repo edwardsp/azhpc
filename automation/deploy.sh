@@ -34,6 +34,7 @@ benchmarkname="${benchmarkname%.*}"
 timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
+cp paramsFile $LOGDIR
 
 function execute {
         task=$1
