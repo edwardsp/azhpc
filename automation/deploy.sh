@@ -36,6 +36,8 @@ LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 cp $paramsFile $LOGDIR
 
+source "telemetry.sh"
+
 function execute {
         task=$1
         SECONDS=0
@@ -76,6 +78,7 @@ fi
 
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
+kpi.get_environment $(get_log "create_resource_group")
 
 parameters=$(cat << EOF
 {
