@@ -16,8 +16,8 @@ function run_benchmark {
                 --file $decomposedCase.tar \
                 --name $storageBenchmarkPath/$decomposedCase.tar \
                 --sas "$storageSasKey"
-            execute "delete_$decomposedCase_dir" rm -rf $decomposedCase
-            execute "delete_$decomposedCase_tarfile" rm $decomposedCase.tar
+            execute "delete_${decomposedCase}_remote_files" ssh hpcuser@{public_ip} "cd /mnt/resource/scratch && rm -rf ${decomposedCase} && rm ${decomposedCase}.tar"
+            execute "delete_${decomposedCase}_local_tarfile" rm $decomposedCase.tar
         done
     done
 
