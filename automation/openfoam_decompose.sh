@@ -3,7 +3,7 @@ required_envvars nnodes_list ppn_list storageAccountName storageContainerName st
 function run_benchmark {
 
     execute "install_openfoam" ssh hpcuser@${public_ip} azhpc/install/install_openfoam.sh
-    execute "download_case" ssh hpcuser@${public_ip} "cd /mnt/resource/scratch && wget https://$storageAccountName.blob.core.windows.net/$storageContainerName/$storageBenchmarkPath/$storageBenchmarkName.tar$storageSasKey -O - | tar xv"
+    execute "download_case" ssh hpcuser@${public_ip} "cd /mnt/resource/scratch && wget 'https://$storageAccountName.blob.core.windows.net/$storageContainerName/$storageBenchmarkPath/$storageBenchmarkName.tar$storageSasKey' -O - | tar xv"
 
     for NNODES in $nnodes_list; do
         for PPN in $ppn_list; do
