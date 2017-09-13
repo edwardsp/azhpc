@@ -119,6 +119,7 @@ done
 if [ "$working_hosts" -ne "$instanceCount" ]; then
         echo "Error: all hosts are not accessible with ssh."
         clear_up
+        exit 1
 fi
 
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
