@@ -2,6 +2,7 @@
 required_envvars LOGDIR
 telemetry_file=$LOGDIR/telemetry.json
 tmp_telemetry_file=$LOGDIR/tmp.telemetry.json
+merged_telemetry=$LOGDIR/merged.telemetry.json
 
 # retrieve azure subscription, location and resource group from the create resource group output
 # $1 : log file
@@ -36,14 +37,12 @@ function kpi.update_environment()
     jsonData="{\"vmSize\":\"${vmSize}\", \"computeNodeImage\":\"${computeNodeImage}\", \
                \"instanceCount\":\"${instanceCount}\", \"provisioningState\":\"${provisioningState}\", \
                \"deploymentTimestamp\":\"${deploymentTimestamp}\" }"
+echo $jsonData
 
-    jq -n '.vmSize=$data.vmSize | \
-           .computeNodeImage=$data.computeNodeImage | \
-           .instanceCount=$data.instanceCount | \
-           .provisioningState=$data.provisioningState | \
-           .deploymentTimestamp=$data.deploymentTimestamp' --argjson $jsonData | tee $tmp_telemetry_file
+    jq -n '.vmSize=$data.vmSize | .computeNodeImage=$data.computeNodeImage | .instanceCount=$data.instanceCount | .provisioningState=$data.provisioningState | .deploymentTimestamp=$data.deploymentTimestamp' --argjson data "${jsonData}" | tee $tmp_telemetry_file
 
-    jq -s add $tmp_telemetry_file $telemetry_file | tee $telemetry_file    
+    jq -S -s add $tmp_telemetry_file $telemetry_file | tee $merged_telemetry
+    cp $merged_telemetry $telemetry_file
 }
 
 
