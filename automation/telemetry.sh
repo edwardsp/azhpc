@@ -37,7 +37,6 @@ function kpi.update_environment()
     jsonData="{\"vmSize\":\"${vmSize}\", \"computeNodeImage\":\"${computeNodeImage}\", \
                \"instanceCount\":\"${instanceCount}\", \"provisioningState\":\"${provisioningState}\", \
                \"deploymentTimestamp\":\"${deploymentTimestamp}\" }"
-echo $jsonData
 
     jq -n '.vmSize=$data.vmSize | .computeNodeImage=$data.computeNodeImage | .instanceCount=$data.instanceCount | .provisioningState=$data.provisioningState | .deploymentTimestamp=$data.deploymentTimestamp' --argjson data "${jsonData}" | tee $tmp_telemetry_file
 
