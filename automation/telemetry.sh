@@ -33,18 +33,17 @@ function kpi.update_environment()
     instanceCount=$(jq -r '.properties.parameters.instanceCount.value' $logs)
     provisioningState=$(jq -r '.properties.provisioningState' $logs)
     deploymentTimestamp=$(jq -r '.properties.timestamp' $logs)
+    jsonData="{\"vmSize\"=\"${vmSize}\", \"computeNodeImage\"=\"${computeNodeImage}\", \
+               \"instanceCount\"=\"${instanceCount}\", \"provisioningState\"=\"${provisioningState}\", \
+               \"deploymentTimestamp\"=\"${deploymentTimestamp}\" }"
 
-    jq --arg data "$vmSize" '.vmSize=$data' $telemetry_file | tee $tmp_telemetry_file
-    cp $tmp_telemetry_file $telemetry_file
-    jq --arg data "$computeNodeImage" '.computeNodeImage=$data' $telemetry_file | tee $tmp_telemetry_file
-    cp $tmp_telemetry_file $telemetry_file
-    jq --arg data "$instanceCount" '.instanceCount=$data' $telemetry_file | tee $tmp_telemetry_file
-    cp $tmp_telemetry_file $telemetry_file
-    jq --arg data "$provisioningState" '.provisioningState=$data' $telemetry_file | tee $tmp_telemetry_file
-    cp $tmp_telemetry_file $telemetry_file
-    jq --arg data "$deploymentTimestamp" '.deploymentTimestamp=$data' $telemetry_file | tee $tmp_telemetry_file
-    cp $tmp_telemetry_file $telemetry_file
-    
+    jq -n '.vmSize=$data.vmSize | \
+           .computeNodeImage=$data.computeNodeImage | \
+           .instanceCount=$data.instanceCount | \
+           .provisioningState=$data.provisioningState | \
+           .deploymentTimestamp=$data.deploymentTimestamp' --argjson $jsonData | tee $tmp_telemetry_file
+
+    jq -s add $tmp_telemetry_file $telemetry_file | tee $telemetry_file    
 }
 
 
