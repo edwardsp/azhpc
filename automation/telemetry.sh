@@ -6,7 +6,7 @@ telemetry_file=$LOGDIR/telemetry.json
 # $1 : log file
 function kpi.get_environment()
 {
-    logs = $(cat $1)
+    logs=$(cat $1)
     kpi.create_root 
 }
 
