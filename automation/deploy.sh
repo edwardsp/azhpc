@@ -1,4 +1,5 @@
 #!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function required_envvars {
         condition_met=true
@@ -36,7 +37,7 @@ LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 cp $paramsFile $LOGDIR
 
-source "telemetry.sh"
+source "$DIR/telemetry.sh"
 
 function execute {
         task=$1
