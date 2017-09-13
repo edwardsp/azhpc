@@ -33,9 +33,9 @@ function kpi.update_environment()
     instanceCount=$(jq -r '.properties.parameters.instanceCount.value' $logs)
     provisioningState=$(jq -r '.properties.provisioningState' $logs)
     deploymentTimestamp=$(jq -r '.properties.timestamp' $logs)
-    jsonData="{\"vmSize\"=\"${vmSize}\", \"computeNodeImage\"=\"${computeNodeImage}\", \
-               \"instanceCount\"=\"${instanceCount}\", \"provisioningState\"=\"${provisioningState}\", \
-               \"deploymentTimestamp\"=\"${deploymentTimestamp}\" }"
+    jsonData="{\"vmSize\":\"${vmSize}\", \"computeNodeImage\":\"${computeNodeImage}\", \
+               \"instanceCount\":\"${instanceCount}\", \"provisioningState\":\"${provisioningState}\", \
+               \"deploymentTimestamp\":\"${deploymentTimestamp}\" }"
 
     jq -n '.vmSize=$data.vmSize | \
            .computeNodeImage=$data.computeNodeImage | \
