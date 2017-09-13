@@ -6,7 +6,7 @@ telemetry_file=$LOGDIR/telemetry.json
 # $1 : log file
 function kpi.get_environment()
 {
-    logs=$(cat $1)
+    logs=$1
     kpi.create_root 
 }
 
@@ -17,12 +17,12 @@ json=$(cat << EOF
 {
     "id":"$(uuidgen)",
     "subscription":"$(jq '.id' $logs | awk -F[/] '{print $3}')",
-    "location":"$(jq '.location' $logs)",
-    "resourceGroup":"$(jq '.name' $logs)"
+    "location":$(jq '.location' $logs),
+    "resourceGroup":$(jq '.name' $logs)
 }
 EOF
 )
 
-    cat $json > $telemetry_file
+    echo $json > $telemetry_file
     
 }
