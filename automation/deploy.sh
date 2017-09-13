@@ -79,7 +79,7 @@ fi
 
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
-kpi.get_environment $(get_log "create_resource_group")
+kpi.create_root $(get_log "create_resource_group")
 
 parameters=$(cat << EOF
 {
@@ -107,6 +107,7 @@ execute "deploy_azhpc" az group deployment create \
     --resource-group "$resource_group" \
     --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
+kpi.update_environment $(get_log "deploy_azhpc")
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 

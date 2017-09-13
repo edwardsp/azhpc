@@ -3,12 +3,14 @@
     "subscription":"f5a67d06-2d09-4090-91cc-e3298907a021",
     "location":"westeurope",
     "resourceGroup":"xps-azhpc-2aedca",
+
     "vmSize":"Standard_H16r",
     "computeNodeImage": "CentOS-HPC_7.1",
     "instanceCount": 16,
     "provisioningState": "Succeeded",
     "deploymentTimestamp":"2017-09-12T17:39:52.697501+00:00",
     "provisionTime":450,
+    
     "hosts":
     {
         "hosts":16, "sshin":16, "retry":1
