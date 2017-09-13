@@ -1,6 +1,7 @@
 #!/bin/bash
 required_envvars LOGDIR
 telemetry_file=$LOGDIR/telemetry.json
+tmp_telemetry_file=$LOGDIR/tmp.telemetry.json
 
 # retrieve azure subscription, location and resource group from the create resource group output
 # $1 : log file
@@ -26,18 +27,24 @@ EOF
 # $1 : log file
 function kpi.update_environment()
 {
-    logs=$1   
-    vmSize=$(jq '.properties.parameters.vmSku.value' $logs)
-    computeNodeImage=$(jq '.properties.parameters.computeNodeImage.value' $logs)
-    instanceCount=$(jq '.properties.parameters.instanceCount.value' $logs)
-    provisioningState=$(jq '.properties.provisioningState' $logs)
-    deploymentTimestamp=$(jq '.properties.timestamp' $logs)
+    logs=$1
+    vmSize=$(jq -r '.properties.parameters.vmSku.value' $logs)
+    computeNodeImage=$(jq -r '.properties.parameters.computeNodeImage.value' $logs)
+    instanceCount=$(jq -r '.properties.parameters.instanceCount.value' $logs)
+    provisioningState=$(jq -r '.properties.provisioningState' $logs)
+    deploymentTimestamp=$(jq -r '.properties.timestamp' $logs)
 
-    jq '.vmSize=$vmSize' $telemetry_file > $telemetry_file
-    jq '.computeNodeImage=$computeNodeImage' $telemetry_file > $telemetry_file
-    jq '.instanceCount=$instanceCount' $telemetry_file > $telemetry_file
-    jq '.provisioningState=$provisioningState' $telemetry_file > $telemetry_file
-    jq '.deploymentTimestamp=$deploymentTimestamp' $telemetry_file > $telemetry_file
+    jq --arg data "$vmSize" '.vmSize=$data' $telemetry_file | tee $tmp_telemetry_file
+    cp $tmp_telemetry_file $telemetry_file
+    jq --arg data "$computeNodeImage" '.computeNodeImage=$data' $telemetry_file | tee $tmp_telemetry_file
+    cp $tmp_telemetry_file $telemetry_file
+    jq --arg data "$instanceCount" '.instanceCount=$data' $telemetry_file | tee $tmp_telemetry_file
+    cp $tmp_telemetry_file $telemetry_file
+    jq --arg data "$provisioningState" '.provisioningState=$data' $telemetry_file | tee $tmp_telemetry_file
+    cp $tmp_telemetry_file $telemetry_file
+    jq --arg data "$deploymentTimestamp" '.deploymentTimestamp=$data' $telemetry_file | tee $tmp_telemetry_file
+    cp $tmp_telemetry_file $telemetry_file
+    
 }
 
 
