@@ -27,7 +27,7 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
-        echo $telemetryData > $LOG_DIR/telemetry.json
+        echo $telemetryData > $LOGDIR/telemetry.json
 }
 
 # assuming already logged in a the moment
