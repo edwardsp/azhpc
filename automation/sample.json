@@ -13,8 +13,8 @@
     
     "clusterDeployment" : {
         "status" : "success",
-        "ssh-retries" : 1,
-        "bad-nodes" : [],
+        "sshretries" : 1,
+        "badnodes" : [],
         "stream" : {
             "parameters" : {
                 "N": 69120, 
@@ -29,7 +29,7 @@
                 {"hostname":"az2aedca00000G", "triad":"80"}
             ]
         },
-        "single-hpl" : {
+        "singlehpl" : {
             "parameters" : {
                 "N": 69120, 
                 "P": 1, 
