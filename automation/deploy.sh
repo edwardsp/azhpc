@@ -43,7 +43,7 @@ fi
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
 subscriptionId=$(jq '.id' $(get_log "create_resource_group") | cut -d'/' -f3)
-telemetryData=$(jq ".subscription=\"$subscriptionId\" | .location=\$data.location | .resourceGroup=\$data.name" --argjson data "$(<$(get_log "create_resource_group"))" <<< $telemetryData)
+telemetryData="$(jq ".subscription=\"$subscriptionId\" | .location=\$data.location | .resourceGroup=\$data.name" --argjson data "$(<$(get_log "create_resource_group"))" <<< $telemetryData)"
 
 parameters=$(cat << EOF
 {
@@ -72,7 +72,7 @@ execute "deploy_azhpc" az group deployment create \
     --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
 
-telemetryData=$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp' --argjson data $(<$(get_log "deploy_azhpc")) <<< $telemetryData)
+telemetryData="$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)"
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
