@@ -22,10 +22,12 @@ LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 cp $paramsFile $LOGDIR
 
-source "$DIR/telemetry.sh"
+# creating a new document with a unique id (intention to put in documentdb)
+telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
+        echo $telemetryData > $LOG_DIR/telemetry.json
 }
 
 # assuming already logged in a the moment
@@ -40,7 +42,8 @@ fi
 
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
-kpi.create_root $(get_log "create_resource_group")
+subscriptionId=$(jq '.id' $(get_log "create_resource_group") | cut -d'/' -f3)
+telemetryData=$(jq '.location=$data.location | .resourceGroup=$data.name' --argjson data $(get_log "deploy_azhpc") <<< $telemetryData)
 
 parameters=$(cat << EOF
 {
@@ -68,7 +71,8 @@ execute "deploy_azhpc" az group deployment create \
     --resource-group "$resource_group" \
     --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
-kpi.update_environment $(get_log "deploy_azhpc")
+
+telemetryData=$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp' --argjson data $(get_log "deploy_azhpc") <<< $telemetryData)
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 

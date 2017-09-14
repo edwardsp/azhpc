@@ -11,23 +11,41 @@
     "deploymentTimestamp":"2017-09-12T17:39:52.697501+00:00",
     "provisionTime":450,
     
-    "hosts":
-    {
-        "hosts":16, "sshin":16, "retry":1
+    "clusterDeployment" : {
+        "status" : "success",
+        "ssh-retries" : 1,
+        "bad-nodes" : [],
+        "stream" : {
+            "parameters" : {
+                "N": 69120, 
+                "P": 1, 
+                "Q": 2, 
+                "NB": 192
+            },
+            "results" : [
+                {"hostname":"az2aedca00000H", "triad":"80"},
+                {"hostname":"az2aedca00000I", "triad":"80"},
+                {"hostname":"az2aedca000008", "triad":"80"},
+                {"hostname":"az2aedca00000G", "triad":"80"}
+            ]
+        },
+        "single-hpl" : {
+            "parameters" : {
+                "N": 69120, 
+                "P": 1, 
+                "Q": 2, 
+                "NB": 192
+            },
+            "results" : [
+                {"hostname":"az2aedca00000H", "duration":"324.11", "gflops":"6.79267e+02"},
+                {"hostname":"az2aedca00000I", "duration":"330.04", "gflops":"6.67063e+02"},
+                {"hostname":"az2aedca000008", "duration":"335.81", "gflops":"6.55611e+02"},
+                {"hostname":"az2aedca00000G", "duration":"342.22", "gflops":"6.43317e+02"}                    
+            ]
+        }
     },
-    "badNodes":
-    {
 
-    },
-    "singleHPL":
-    {
-        "N":69120, "P":1, "Q":2, "NB":192,
-        "results":[
-            {"hostname":"az2aedca00000H", "duration":"324.11", "gflops":"6.79267e+02"},
-            {"hostname":"az2aedca00000I", "duration":"330.04", "gflops":"6.67063e+02"},
-            {"hostname":"az2aedca000008", "duration":"335.81", "gflops":"6.55611e+02"},
-            {"hostname":"az2aedca00000G", "duration":"342.22", "gflops":"6.43317e+02"}
-        ]
-    },
-    "deletionTime":300
+    "benchmarkResult" : {
+        "benchmarkName" : null
+    }
 }
