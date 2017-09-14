@@ -6,12 +6,12 @@ function run_benchmark() {
         execute "reboot_${reboot}" az vmss restart --name "$vmssName" --resource-group "$resource_group"
         
         execute "reboot_${reboot}_get_hosts" ssh hpcuser@${public_ip} nmapForHosts
-        working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "reboot_${reboot}_get_hosts"))
+        working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "reboot_${reboot}_get_hosts"))
         retry=1
         while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
             sleep 60
             execute "reboot_${reboot}_get_hosts_retry_$retry" ssh hpcuser@${public_ip} nmapForHosts
-            working_hosts=$(sed -n "s/.*hosts=\([^;]*\).*/\1/p" $(get_log "reboot_${reboot}_get_hosts_retry_$retry"))
+            working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "reboot_${reboot}_get_hosts_retry_$retry"))
             let retry=$retry+1
         done
 
