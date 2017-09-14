@@ -1,20 +1,6 @@
 #!/bin/bash
-
-function required_envvars {
-        condition_met=true
-        for i in "$@"; do
-        if [ -z "$i" ]; then
-                        echo "ERROR: $i needs to be set."
-                        condition_met=false
-                else
-                        echo "$i=${!i}"
-                fi
-        done
-        if [ "$condition_met" = "false" ]; then
-                echo
-                exit 1
-        fi
-}
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$DIR/common.sh"
 
 paramsFile=$1
 echo "Reading parameters from: $paramsFile"
@@ -36,29 +22,7 @@ LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 cp $paramsFile $LOGDIR
 
-function execute {
-        task=$1
-        SECONDS=0
-        echo -n "Executing: $2"
-        for a in "${@:3}"; do
-                echo -n " '$(echo -n $a | tr '\n' ' ')'"
-        done
-        echo
-        $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
-        duration=$SECONDS
-        echo "$task $duration" | tee -a $LOGDIR/times.log
-}
-
-function get_files {
-        for fname in "$@"; do
-                scp hpcuser@${public_ip}:$fname $LOGDIR
-        done
-}
-
-function get_log {
-	task=$1
-	echo $LOGDIR/${task}.log
-}
+source "$DIR/telemetry.sh"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
@@ -76,6 +40,7 @@ fi
 
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
+kpi.create_root $(get_log "create_resource_group")
 
 parameters=$(cat << EOF
 {
@@ -103,6 +68,7 @@ execute "deploy_azhpc" az group deployment create \
     --resource-group "$resource_group" \
     --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
+kpi.update_environment $(get_log "deploy_azhpc")
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
