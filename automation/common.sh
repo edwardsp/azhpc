@@ -1,4 +1,5 @@
 #!/bin/bash
+
 function required_envvars {
         condition_met=true
         for i in "$@"; do
@@ -15,6 +16,9 @@ function required_envvars {
         fi
 }
 
+# a variable to store the last duration for the execute call
+execute_duration=0
+
 function execute {
         task=$1
         SECONDS=0
@@ -24,8 +28,8 @@ function execute {
         done
         echo
         $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
-        duration=$SECONDS
-        echo "$task $duration" | tee -a $LOGDIR/times.log
+        execute_duration=$SECONDS
+        echo "$task $execute_duration" | tee -a $LOGDIR/times.log
 }
 
 function get_files {
