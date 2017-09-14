@@ -43,7 +43,7 @@ fi
 # create the resource group
 execute "create_resource_group" az group create --name "$resource_group" --location "$location"
 subscriptionId=$(jq '.id' $(get_log "create_resource_group") | cut -d'/' -f3)
-telemetryData=$(jq '.location=$data.location | .resourceGroup=$data.name' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)
+telemetryData=$(jq ".subscription=\"$subscriptionId\" | .location=\$data.location | .resourceGroup=\$data.name" --argjson data "$(<$(get_log "create_resource_group"))" <<< $telemetryData)
 
 parameters=$(cat << EOF
 {
