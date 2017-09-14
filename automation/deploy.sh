@@ -79,14 +79,14 @@ public_ip=$(az network public-ip list --resource-group "$resource_group" --query
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
 working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
 retry=1
-while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
+while [ "$retry" -lt "6" -a "$working_hosts" -lt "$instanceCount" ]; do
         sleep 60
         execute "get_hosts_retry_$retry" ssh hpcuser@${public_ip} nmapForHosts
         working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts_retry_$retry"))
         let retry=$retry+1
 done
 
-if [ "$working_hosts" -ne "$instanceCount" ]; then
+if [ "$working_hosts" -lt "$instanceCount" ]; then
         echo "Error: all hosts are not accessible with ssh."
         clear_up
         exit 1
