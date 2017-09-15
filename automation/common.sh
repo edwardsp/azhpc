@@ -29,7 +29,7 @@ function execute {
         echo
         $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
         execute_duration=$SECONDS
-        echo "$task $execute_duration" | tee -a $LOGDIR/times.log
+        echo "$task,$execute_duration" | tee -a $LOGDIR/times.csv
 
         if [ "$logToStorage" = true ]; then
                 az storage blob upload \
