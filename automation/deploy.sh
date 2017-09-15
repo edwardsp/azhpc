@@ -100,5 +100,6 @@ execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 
 # run the benchmark function
 run_benchmark
+telemetryData="$(jq '$data + .' --argjson data \"$telemetryData\" <<< $telemetryBench)"
 
 clear_up
