@@ -14,3 +14,9 @@ rsaPublicKey=$(cat ~/.ssh/id_rsa.pub)
 numberOfNodesToTest="8 16"
 processesPerNode=16
 podKey=
+
+logToStorage=false
+logStorageAccountName=
+logStorageContainerName=
+logStoragePath=
+logStorageSasKey=

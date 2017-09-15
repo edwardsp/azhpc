@@ -7,6 +7,10 @@ echo "Reading parameters from: $paramsFile"
 source $paramsFile
 required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
 
+if [ "$logToStorage" = true ]; then
+        required_envvars logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
+fi
+
 benchmarkScript=$2
 echo "Benchmark script: $benchmarkScript"
 source $benchmarkScript
