@@ -41,7 +41,7 @@ function execute {
                 az storage blob upload \
                         --account-name $logStorageAccountName \
                         --container-name $logStorageContainerName \
-                        --file $LOGDIR/times.log \
+                        --file $LOGDIR/times.csv \
                         --name $logStoragePath/$LOGDIR/times.csv \
                         --sas "$logStorageSasKey"
         fi
