@@ -9,5 +9,7 @@ class pynina():
     def saveFromFile(self, jsonFile):
         # load json document
         with open(jsonFile, 'r') as F:
-            self.jsonRepo.UpdateDocument(F.read())
+            json = F.read()
+            print (json)
+            self.jsonRepo.UpdateDocument(json)
 
