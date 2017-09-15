@@ -42,7 +42,7 @@ function execute {
                         --account-name $logStorageAccountName \
                         --container-name $logStorageContainerName \
                         --file $LOGDIR/times.log \
-                        --name $logStoragePath/$LOGDIR/times.log \
+                        --name $logStoragePath/$LOGDIR/times.csv \
                         --sas "$logStorageSasKey"
         fi
 }
