@@ -4,4 +4,4 @@
 from pynina import pynina
 
 app = pynina()
-app.saveFromFile("telemetry.jon")
+app.saveFromFile("telemetry.json")
