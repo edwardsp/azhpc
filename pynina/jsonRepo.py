@@ -1,7 +1,6 @@
-import pydocumentdb.documents as documents
 import pydocumentdb.document_client as document_client
 
-class jsonRepo():
+class jsonrepo():
     """ use to save a json document into CosmosDB """
     def __init__(self, endpoint, key, database, collection):
         self.client = document_client.DocumentClient(endpoint, {'masterKey': key})
