@@ -16,5 +16,5 @@ function run_benchmark() {
 	json=$(cat $LOGDIR/run_hpl*.log | grep WC00C2R2 | sed 's/: /,/g;s/  */,/g' | cut -d',' -f1,7,8 | jq -c -s --raw-input --raw-output 'split("\n") | map(split(",")) | .[:-1] | map({"hostname": .[0],"duration": .[1],"gflops": .[2]})')
 	echo $json
 	jsonBenchmark="$(jq '.singlehpl.results=$data' --argjson data "$json" <<< $jsonRoot)"
-	echo jsonBenchmark
+	echo $jsonBenchmark
 }
