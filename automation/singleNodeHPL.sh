@@ -7,9 +7,12 @@ function run_benchmark() {
 	
 	# run HPL. problem size 69120 is allocating 36 GB. For 64GB use 92160.
 	# 
-	telemetryBench="$(jq -n '.singlehpl.parameters.N=69120 | .singlehpl.parameters.P=1 | .singlehpl.parameters.Q=2 | .singlehpl.parameters.NB=192' )"
     for i in $(seq 1 5); do	
 		execute "run_hpl${i}" ssh hpcuser@${public_ip} "pdsh 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n 69120 -p 1 -q 2 -nb 192 | grep WC00C2R2'"
-
 	done
+
+	jsonRoot="$(jq -n '.singlehpl.parameters.N=69120 | .singlehpl.parameters.P=1 | .singlehpl.parameters.Q=2 | .singlehpl.parameters.NB=192 | .singlehpl.results=[]' )"
+	json=$(cat $LOGDIR/run_hpl*.log | grep WC00C2R2 | sed 's/: /,/g;s/  */,/g' | cut -d',' -f1,7,8 | jq -c -s --raw-input --raw-output 'split("\n") | map(split(",")) | .[:-1] | map({"hostname": .[0],"duration": .[1],"gflops": .[2]})')
+	jsonBenchmark="$(jq '.singlehpl.results=$data' --argjson data "$json" <<< $jsonRoot)"
+
 }

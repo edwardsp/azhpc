@@ -40,7 +40,7 @@
                 {"hostname":"az2aedca00000H", "duration":"324.11", "gflops":"6.79267e+02"},
                 {"hostname":"az2aedca00000I", "duration":"330.04", "gflops":"6.67063e+02"},
                 {"hostname":"az2aedca000008", "duration":"335.81", "gflops":"6.55611e+02"},
-                {"hostname":"az2aedca00000G", "duration":"342.22", "gflops":"6.43317e+02"}                    
+                {"hostname":"az2aedca00000G", "duration":"342.22", "gflops":"6.43317e+02"}
             ]
         }
     },

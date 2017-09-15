@@ -106,6 +106,6 @@ execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 run_benchmark
 
 # TODO : need to check telemetryBench before merging otherwise we may lose it
-telemetryData="$(jq '$data + .' --argjson data \"$telemetryData\" <<< $telemetryBench)"
+telemetryData="$(jq '$data + .' --argjson data \"$telemetryData\" <<< $jsonBenchmark)"
 
 clear_up
