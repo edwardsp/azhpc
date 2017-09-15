@@ -30,6 +30,21 @@ function execute {
         $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
         execute_duration=$SECONDS
         echo "$task $execute_duration" | tee -a $LOGDIR/times.log
+
+        if [ "$logToStorage" = true ]; then
+                az storage blob upload \
+                        --account-name $storageAccountName \
+                        --container-name $storageContainerName \
+                        --file $LOGDIR/$task.log \
+                        --name $logStoragePath/$LOGDIR/$task.log \
+                        --sas "$logStorageSasKey"
+                az storage blob upload \
+                        --account-name $storageAccountName \
+                        --container-name $storageContainerName \
+                        --file $LOGDIR/times.log \
+                        --name $logStoragePath/$LOGDIR/times.log \
+                        --sas "$logStorageSasKey"
+        fi
 }
 
 function get_files {
