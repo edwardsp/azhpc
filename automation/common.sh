@@ -33,14 +33,14 @@ function execute {
 
         if [ "$logToStorage" = true ]; then
                 az storage blob upload \
-                        --account-name $storageAccountName \
-                        --container-name $storageContainerName \
+                        --account-name $logStorageAccountName \
+                        --container-name $logStorageContainerName \
                         --file $LOGDIR/$task.log \
                         --name $logStoragePath/$LOGDIR/$task.log \
                         --sas "$logStorageSasKey"
                 az storage blob upload \
-                        --account-name $storageAccountName \
-                        --container-name $storageContainerName \
+                        --account-name $logStorageAccountName \
+                        --container-name $logStorageContainerName \
                         --file $LOGDIR/times.log \
                         --name $logStoragePath/$LOGDIR/times.log \
                         --sas "$logStorageSasKey"
