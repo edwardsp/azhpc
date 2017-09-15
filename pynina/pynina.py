@@ -11,5 +11,8 @@ class pynina():
         with open(jsonFile, 'r') as F:
             json = F.read()
             print (json)
-            self.jsonRepo.UpdateDocument(json)
+            doc = dict()
+            doc['id']=""
+            doc['content']=json
+            self.jsonRepo.UpdateDocument(doc)
 
