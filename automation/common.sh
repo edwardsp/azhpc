@@ -47,9 +47,37 @@ function execute {
         fi
 }
 
+function error_message {
+        echo "ERROR: $1" | tee $LOGDIR/error.log
+        if [ "$logToStorage" = true ]; then
+                az storage blob upload \
+                        --account-name $logStorageAccountName \
+                        --container-name $logStorageContainerName \
+                        --file $LOGDIR/times.log \
+                        --name $logStoragePath/$LOGDIR/error.log \
+                        --sas "$logStorageSasKey"
+        fi
+}
+
 function get_files {
-        for fname in "$@"; do
-                scp hpcuser@${public_ip}:$fname $LOGDIR
+        for param in "$@"; do
+                for fullpath in $(ssh hpcuser@${public_ip} "for i in $param; do if [ -f \"\$i\" ]; then echo \$i; fi; done"); do 
+                        fname=${fullpath##*/}
+                        echo "Downloading remote file $fullpath to $LOGDIR/$fname."
+                        if [ -e "$LOGDIR/$fname" ]; then
+                                error_message "get_files: Not getting file $fullpath as it will overwrite local file ($LOGDIR/$fname)"
+                                continue
+                        fi
+                        scp hpcuser@${public_ip}:$fullpath $LOGDIR
+                        if [ "$logToStorage" = true ]; then
+                                az storage blob upload \
+                                        --account-name $logStorageAccountName \
+                                        --container-name $logStorageContainerName \
+                                        --file $LOGDIR/$fname \
+                                        --name $logStoragePath/$LOGDIR/$fname \
+                                        --sas "$logStorageSasKey"
+                        fi
+                done
         done
 }
 
