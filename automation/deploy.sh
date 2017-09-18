@@ -32,7 +32,7 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
         echo $telemetryData > $LOGDIR/telemetry.json
-        dotnet ./corenina/bin/corenina.dll $LOGDIR/telemetry.json
+        upload_json $LOGDIR/telemetry.json
 }
 
 # assuming already logged in a the moment
@@ -104,9 +104,10 @@ telemetryData="$(jq ".clusterDeployment.status=\"success\"" <<< $telemetryData)"
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 
 # run the benchmark function
+jsonBenchmark="{}"
 run_benchmark
 
-# TODO : need to check telemetryBench before merging otherwise we may lose it
+# TODO : need to check jsonBenchmark before merging otherwise we may lose it
 echo $telemetryData > $LOGDIR/tmp.telemetry.json
 telemetryData="$(jq '$data + .' --argjson data "$telemetryData" <<< $jsonBenchmark)"
 
