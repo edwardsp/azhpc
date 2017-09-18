@@ -32,6 +32,7 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
         echo $telemetryData > $LOGDIR/telemetry.json
+        upload_json $LOGDIR/telemetry.json
 }
 
 # assuming already logged in a the moment
@@ -90,15 +91,24 @@ while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         let retry=$retry+1
 done
 
+telemetryData="$(jq ".clusterDeployment.sshretries=\"$retry\"" <<< $telemetryData)"
+
 if [ "$working_hosts" -ne "$instanceCount" ]; then
         echo "Error: all hosts are not accessible with ssh."
+        telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
         clear_up
         exit 1
 fi
+telemetryData="$(jq ".clusterDeployment.status=\"success\"" <<< $telemetryData)"
 
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 
 # run the benchmark function
+jsonBenchmark="{}"
 run_benchmark
+
+# TODO : need to check jsonBenchmark before merging otherwise we may lose it
+echo $telemetryData > $LOGDIR/tmp.telemetry.json
+telemetryData="$(jq '$data + .' --argjson data "$telemetryData" <<< $jsonBenchmark)"
 
 clear_up

@@ -20,3 +20,6 @@ logStorageAccountName=
 logStorageContainerName=
 logStoragePath=
 logStorageSasKey=
+
+cosmosEndpointUri=
+cosmosPrimaryKey=
