@@ -32,6 +32,7 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
         echo $telemetryData > $LOGDIR/telemetry.json
+        dotnet ./corenina/bin/corenina.dll $LOGDIR/telemetry.json
 }
 
 # assuming already logged in a the moment
