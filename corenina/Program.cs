@@ -13,8 +13,6 @@ namespace corenina
 {
     class Program
     {
-        // private const string _endpointUri = "https://ninadb.documents.azure.com:443/";
-        // private const string _primaryKey = "tH0qjX7LoEDNlGH8gER9j7wqXejslxoqwxTguV1iQi7vWsiQV5hooafnQvnIJRsXWrJEixrZ2RBiEP59kBt1Xg==";
         private const string _dbName = "Nina";
         private const string _collectionId = "Results";
         private DocumentClient _client;
