@@ -60,6 +60,6 @@ function get_log {
 
 function upload_json {
         appJson=$(jq --arg endpoint $cosmosEndpointUri --arg key $cosmosPrimaryKey '.EndpointUri=$endpoint | .PrimaryKey=$key' ./corenina/bin/appsettings.json)
-        echo appJson > ./corenina/bin/appsettings.json
+        echo $appJson > ./corenina/bin/appsettings.json
         dotnet ./corenina/bin/corenina.dll $1
 }
