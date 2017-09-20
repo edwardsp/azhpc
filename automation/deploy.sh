@@ -32,8 +32,9 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
         echo $telemetryData > $LOGDIR/telemetry.json
-        upload_json $LOGDIR/telemetry.json
-        $DIR/cosmos_upload_doc.sh $cosmos_account $cosmos_database $cosmos_collection $cosmos_key "$telemetryData"
+        if [ "$logToStorage" = true ]; then
+                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$telemetryData"
+        fi
 }
 
 # assuming already logged in a the moment
