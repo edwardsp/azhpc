@@ -8,7 +8,7 @@ source $paramsFile
 required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
 
 if [ "$logToStorage" = true ]; then
-        required_envvars logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
+        required_envvars cosmos_account cosmos_database cosmos_collection cosmos_key logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
 fi
 
 benchmarkScript=$2
@@ -33,6 +33,7 @@ function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
         echo $telemetryData > $LOGDIR/telemetry.json
         upload_json $LOGDIR/telemetry.json
+        $DIR/cosmos_upload_doc.sh $cosmos_account $cosmos_database $cosmos_collection $cosmos_key "$telemetryData"
 }
 
 # assuming already logged in a the moment
