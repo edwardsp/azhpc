@@ -12,7 +12,6 @@ signature="$(echo -ne "$text" | openssl dgst -sha256 -hmac "$(echo "$key" | base
 auth_token="$(echo -n "type=master&ver=1.0&sig=$signature" | jq -s -R -r @uri)"
 
 curl -s \
-        -H "x-ms-documentdb-partitionkey: [$(jq '.id' <<< $json)]" \
         -H "x-ms-version: 2015-12-16" \
         -H "x-ms-date: $date_now" \
         -H "Accept: application/json" \
