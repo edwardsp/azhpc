@@ -1,8 +1,8 @@
 {
     "singleNode":
     [
-        {"vmSize":"Standard_H16r", "N":92120, "P":1, "Q":2, "NB":192, "PeakGflops":"691.2"},
-        {"vmSize":"Standard_H16mr", "N":92120, "P":1, "Q":2, "NB":192, "PeakGflops":"691.2"},
-        {"vmSize":"Standard_A9", "N":92120, "P":1, "Q":2, "NB":192, "PeakGflops":"332.8"}
+        {"vmSize":"Standard_H16r", "N":69120, "P":1, "Q":2, "NB":192, "PeakGflops":"691.2"},
+        {"vmSize":"Standard_H16mr", "N":69120, "P":1, "Q":2, "NB":192, "PeakGflops":"691.2"},
+        {"vmSize":"Standard_A9", "N":69120, "P":1, "Q":2, "NB":192, "PeakGflops":"332.8"}
     ]
 }
