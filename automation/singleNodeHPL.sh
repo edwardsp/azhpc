@@ -3,7 +3,9 @@ required_envvars vmSku
 function run_benchmark() {
 	execute "get_hpl" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
 	
-	hplParams=$(jq '.singleNode[] | select(.vmSize == $data)' --arg data $vmSku hplparams.json)
+	scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+	hplParams=$(jq '.singleNode[] | select(.vmSize == $data)' --arg data $vmSku $scriptdir/hplparams.json)
 	N=$(jq '.N' <<< $hplParams)
 	NB=$(jq '.NB' <<< $hplParams)
 	P=$(jq '.P' <<< $hplParams)
