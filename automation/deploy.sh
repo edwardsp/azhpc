@@ -122,6 +122,6 @@ telemetryData="$(jq '.singlehpl.results=$data' --argjson data "$linpack_results"
 benchmarkData="{}"
 run_benchmark
 
-telemetryData="$(jq '.benchmark=$data + .' --argjson data "$benchmarkData" <<< $telemetryData)"
+telemetryData="$(jq '.benchmark=$data' --argjson data "$benchmarkData" <<< $telemetryData)"
 
 clear_up
