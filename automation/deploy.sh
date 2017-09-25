@@ -124,7 +124,7 @@ get_files '*_to_*_pingpong.log'
 for i in *_to_*_pingpong.log; do
         src=$(echo $i | cut -d'_' -f1)
         dst=$(echo $i | cut -d'_' -f3)
-        cat $(get_log ${src}_to_${dst}_pingpong.log) | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t[usec]":.[2],"Mbytes/sec":.[3]})' >${src}_to_${dst}_pingpong.json
+        cat $(get_log ${src}_to_${dst}_pingpong) | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t[usec]":.[2],"Mbytes/sec":.[3]})' >${src}_to_${dst}_pingpong.json
 done
 ringpingpongData=$(jq -s add *_to_*_pingpong.json)
 telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongData" <<< $telemetryData)"
