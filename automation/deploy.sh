@@ -37,7 +37,7 @@ function clear_up {
 }
 
 # assuming already logged in a the moment or use the Service Principal params
-if [ "$azLogin" -ne "" ]; then
+if [ "$azLogin" != "" ]; then
         echo "login to azure with Service Principal"
         az login --service-principal -u $azLogin -p $azPassword --tenant $azTenant
 fi
