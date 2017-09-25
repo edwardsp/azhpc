@@ -21,5 +21,5 @@ function run_benchmark() {
 
 	#jsonRoot="$(jq -n '.singlehpl.parameters.N=69120 | .singlehpl.parameters.P=1 | .singlehpl.parameters.Q=2 | .singlehpl.parameters.NB=192 | .singlehpl.results=[]' )"
 	json="$(cat $LOGDIR/run_hpl*.log | jq -s -R 'split("\n") | map(select(contains("WC00C2R2"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"duration": .[6],"gflops": .[7]})')"
-	jsonBenchmark="$(jq '.singlehpl.results=$data' --argjson data "$json" <<< $jsonRoot)"
+	benchmarkData="$(jq '.singlehpl.results=$data' --argjson data "$json" <<< $jsonRoot)"
 }
