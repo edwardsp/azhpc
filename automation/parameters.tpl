@@ -15,6 +15,11 @@ numberOfNodesToTest="8 16"
 processesPerNode=16
 podKey=
 
+linpack_N=69120
+linpack_P=1
+linpack_Q=2
+linpack_NB=192
+
 azLogin=
 azPassword=
 azTenant=
