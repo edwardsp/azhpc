@@ -119,7 +119,7 @@ telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpa
 telemetryData="$(jq '.singlehpl.results=$data' --argjson data "$linpack_results" <<< $telemetryData)"
 
 # run the ring pingpong benchmark
-execute "run_ring_pingpong" ssh hpcuser@${public_ip} 'ssh $(cat bin/hostlist) run_ring_pingpong.sh'
+execute "run_ring_pingpong" ssh hpcuser@${public_ip} 'ssh $(cat bin/hostlist) ~/azhpc/benchmarks/run_ring_pingpong.sh'
 get_files '*_to_*_pingpong.log'
 for i in *_to_*_pingpong.log; do
         src=$(echo $i | cut -d'_' -f1)
