@@ -8,12 +8,18 @@ location="North Central US"
 vmSku=Standard_H16r
 vmssName=az${my_uid}
 computeNodeImage=CentOS-HPC_7.1
-instanceCount=16
+instanceCount=4
 rsaPublicKey=$(cat ~/.ssh/id_rsa.pub)
 
 numberOfNodesToTest="8 16"
 processesPerNode=16
 podKey=
+
+azLogin=
+azPassword=
+azTenant=
+
+rootLogDir=
 
 logToStorage=false
 logStorageAccountName=
