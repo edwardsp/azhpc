@@ -16,12 +16,6 @@
         "sshretries" : 1,
         "badnodes" : [],
         "stream" : {
-            "parameters" : {
-                "N": 69120, 
-                "P": 1, 
-                "Q": 2, 
-                "NB": 192
-            },
             "results" : [
                 {"hostname":"az2aedca00000H", "triad":"80"},
                 {"hostname":"az2aedca00000I", "triad":"80"},
@@ -57,7 +51,7 @@
             }
         ]
     },
-    "benchmarkResult" : {
-        "benchmarkName" : null
+
+    "benchmark" : {
     }
 }

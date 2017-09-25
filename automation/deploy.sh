@@ -5,8 +5,7 @@ source "$DIR/common.sh"
 paramsFile=$1
 echo "Reading parameters from: $paramsFile"
 source $paramsFile
-required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey
-
+required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey linpack_N linpack_P linpack_Q linpack_NB
 if [ "$logToStorage" = true ]; then
         required_envvars cosmos_account cosmos_database cosmos_collection cosmos_key logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
 fi
@@ -106,12 +105,23 @@ telemetryData="$(jq ".clusterDeployment.status=\"success\"" <<< $telemetryData)"
 
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 
+# run the STREAM benchmark
+execute "get_stream" ssh hpcuser@${public_ip} 'wget https://paedwar.blob.core.windows.net/public/stream.96GB && chmod +x stream.96GB'
+execute "run_stream" ssh hpcuser@${public_ip} pdsh 'KMP_AFFINITY=scatter ./stream.96GB'
+stream_results=$(cat $(get_log "run_stream") | jq -s -R 'split("\n") | map(select(contains("Triad"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"triad":.[2]})')
+telemetryData="$(jq '.stream.results=$data' --argjson data "$stream_results" <<< $telemetryData)"
+
+# run the LINPACK benchmark
+execute "get_linpack" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
+execute "run_linpack" ssh hpcuser@${public_ip} "pdsh 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n $linpack_N -p $linpack_P -q $linpack_Q -nb $linpack_NB | grep WC00C2R2'"
+linpack_results="$(cat $(get_log "run_linpack") | jq -s -R 'split("\n") | map(select(contains("WC00C2R2"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"duration": .[6],"gflops": .[7]})')"
+telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB}" <<< $telemetryData)"
+telemetryData="$(jq '.singlehpl.results=$data' --argjson data "$linpack_results" <<< $telemetryData)"
+
 # run the benchmark function
-jsonBenchmark="{}"
+benchmarkData="{}"
 run_benchmark
 
-# TODO : need to check jsonBenchmark before merging otherwise we may lose it
-echo $telemetryData > $LOGDIR/tmp.telemetry.json
-telemetryData="$(jq '$data + .' --argjson data "$telemetryData" <<< $jsonBenchmark)"
+telemetryData="$(jq '.benchmark=$data' --argjson data "$benchmarkData" <<< $telemetryData)"
 
 clear_up
