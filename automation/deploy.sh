@@ -22,9 +22,8 @@ paramsname="${paramsname%.*}"
 benchmarkname=$(basename "$benchmarkScript")
 benchmarkname="${benchmarkname%.*}"
 timestamp=$(date +%Y-%m-%d_%H-%M-%S)
-LOGDIR=${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
+LOGDIR=$rootLogDir/${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
-cp $paramsFile $LOGDIR
 
 # creating a new document with a unique id (intention to put in documentdb)
 telemetryData="{ \"id\" : \"$(uuidgen)\" }"
@@ -37,9 +36,11 @@ function clear_up {
         fi
 }
 
-# assuming already logged in a the moment
-# TODO: test to see if login is required
-#az login
+# assuming already logged in a the moment or use the Service Principal params
+if [ "$azLogin" != "" ]; then
+        echo "login to azure with Service Principal"
+        az login --service-principal -u $azLogin -p $azPassword --tenant $azTenant
+fi
 
 # make sure the resource group does not exist
 if [ "$(az group exists --name $resource_group)" = "true" ]; then
