@@ -19,6 +19,7 @@ linpack_N=69120
 linpack_P=1
 linpack_Q=2
 linpack_NB=192
+linpack_Peak=691.2
 
 azLogin=
 azPassword=

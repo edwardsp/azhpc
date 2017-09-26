@@ -1,44 +1,189 @@
 {
-    "id": "cfd23a4d-f413-4d9f-881d-c893655cdd91",
-    "subscription":"f5a67d06-2d09-4090-91cc-e3298907a021",
-    "location":"westeurope",
-    "resourceGroup":"xps-azhpc-2aedca",
-
-    "vmSize":"Standard_H16r",
-    "computeNodeImage": "CentOS-HPC_7.1",
+    "id": "3b72c53c-6175-4c35-9c40-2ea6eaae8beb",
+    "subscription": "f5a67d06-2d09-4090-91cc-e3298907a021",
+    "location": "northcentralus",
+    "resourceGroup": "xpillons-azhpc-41397c",
+    "vmSize": "Standard_H16r",
+    "computeNodeImage": "CentOS-HPC_7.3",
     "instanceCount": 16,
     "provisioningState": "Succeeded",
-    "deploymentTimestamp":"2017-09-12T17:39:52.697501+00:00",
-    "provisionTime":450,
-    
-    "clusterDeployment" : {
-        "status" : "success",
-        "sshretries" : 1,
-        "badnodes" : [],
-        "stream" : {
-            "results" : [
-                {"hostname":"az2aedca00000H", "triad":"80"},
-                {"hostname":"az2aedca00000I", "triad":"80"},
-                {"hostname":"az2aedca000008", "triad":"80"},
-                {"hostname":"az2aedca00000G", "triad":"80"}
-            ]
-        },
-        "singlehpl" : {
-            "parameters" : {
-                "N": 69120, 
-                "P": 1, 
-                "Q": 2, 
-                "NB": 192
-            },
-            "results" : [
-                {"hostname":"az2aedca00000H", "duration":"324.11", "gflops":"6.79267e+02"},
-                {"hostname":"az2aedca00000I", "duration":"330.04", "gflops":"6.67063e+02"},
-                {"hostname":"az2aedca000008", "duration":"335.81", "gflops":"6.55611e+02"},
-                {"hostname":"az2aedca00000G", "duration":"342.22", "gflops":"6.43317e+02"}
-            ]
-        }
+    "deploymentTimestamp": "2017-09-25T10:02:40.795684+00:00",
+    "clusterDeployment": {
+        "sshretries": "1",
+        "status": "success"
     },
-
-    "benchmark" : {
+    "stream": {
+        "results": [
+            {
+                "hostname": "az41397c00000E",
+                "triad": "77620.3"
+            },
+            {
+                "hostname": "az41397c00000A",
+                "triad": "77483.6"
+            },
+            {
+                "hostname": "az41397c000006",
+                "triad": "77475.3"
+            },
+            {
+                "hostname": "az41397c000003",
+                "triad": "77644.1"
+            },
+            {
+                "hostname": "az41397c00000D",
+                "triad": "77327.7"
+            },
+            {
+                "hostname": "az41397c000002",
+                "triad": "77629.9"
+            },
+            {
+                "hostname": "az41397c00000G",
+                "triad": "77282.8"
+            },
+            {
+                "hostname": "az41397c000007",
+                "triad": "77109.6"
+            },
+            {
+                "hostname": "az41397c00000H",
+                "triad": "77304.0"
+            },
+            {
+                "hostname": "az41397c000005",
+                "triad": "76765.2"
+            },
+            {
+                "hostname": "az41397c00000C",
+                "triad": "77478.2"
+            },
+            {
+                "hostname": "az41397c000001",
+                "triad": "77537.8"
+            },
+            {
+                "hostname": "az41397c000008",
+                "triad": "77364.8"
+            },
+            {
+                "hostname": "az41397c000009",
+                "triad": "76602.2"
+            },
+            {
+                "hostname": "az41397c000004",
+                "triad": "77389.7"
+            },
+            {
+                "hostname": "az41397c00000F",
+                "triad": "76319.4"
+            }
+        ]
+    },
+    "singlehpl": {
+        "parameters": {
+            "N": 69120,
+            "P": 1,
+            "Q": 2,
+            "NB": 192
+        },
+        "results": [
+            {
+                "hostname": "az41397c00000D",
+                "duration": "328.99",
+                "gflops": "6.69203e+02"
+            },
+            {
+                "hostname": "az41397c000005",
+                "duration": "330.94",
+                "gflops": "6.65245e+02"
+            },
+            {
+                "hostname": "az41397c000003",
+                "duration": "331.76",
+                "gflops": "6.63606e+02"
+            },
+            {
+                "hostname": "az41397c000002",
+                "duration": "335.03",
+                "gflops": "6.57138e+02"
+            },
+            {
+                "hostname": "az41397c000006",
+                "duration": "334.90",
+                "gflops": "6.57381e+02"
+            },
+            {
+                "hostname": "az41397c00000F",
+                "duration": "335.61",
+                "gflops": "6.55984e+02"
+            },
+            {
+                "hostname": "az41397c00000G",
+                "duration": "335.96",
+                "gflops": "6.55307e+02"
+            },
+            {
+                "hostname": "az41397c000001",
+                "duration": "336.36",
+                "gflops": "6.54524e+02"
+            },
+            {
+                "hostname": "az41397c00000H",
+                "duration": "336.63",
+                "gflops": "6.54008e+02"
+            },
+            {
+                "hostname": "az41397c00000C",
+                "duration": "336.76",
+                "gflops": "6.53750e+02"
+            },
+            {
+                "hostname": "az41397c00000E",
+                "duration": "337.66",
+                "gflops": "6.52008e+02"
+            },
+            {
+                "hostname": "az41397c00000A",
+                "duration": "338.78",
+                "gflops": "6.49846e+02"
+            },
+            {
+                "hostname": "az41397c000008",
+                "duration": "338.63",
+                "gflops": "6.50137e+02"
+            },
+            {
+                "hostname": "az41397c000007",
+                "duration": "342.21",
+                "gflops": "6.43335e+02"
+            },
+            {
+                "hostname": "az41397c000009",
+                "duration": "344.47",
+                "gflops": "6.39116e+02"
+            },
+            {
+                "hostname": "az41397c000004",
+                "duration": "344.94",
+                "gflops": "6.38251e+02"
+            }
+        ]
+    },
+    "benchmark": {
+        "starccm": {
+            "results": [
+                {
+                    "avgelapsedtime": "7.9362030029296875",
+                    "workers": "128"
+                },
+                {
+                    "avgelapsedtime": "4.2984367370605465",
+                    "workers": "256"
+                }
+            ],
+            "name": "LeMans_100M",
+            "version": "12.02.010"
+        }
     }
 }
