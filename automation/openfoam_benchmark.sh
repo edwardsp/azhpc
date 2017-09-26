@@ -16,6 +16,6 @@ function run_benchmark() {
     end_time=$(grep ExecutionTime $of_logfile | tail -n1 | cut -d' ' -f8)
     clockTime=$(echo "$end_time - $start_time" | bc)
 
-    benchmarkData=$(jq -n '.openfoam.results.name=$storageBenchmarkName | openfoam.results.numberOfRanks=$numProcs | openfoam.results.processorsPerNode=$processesPerNode | openfoam.results.numberOfIterations=$numberOfIterations | openfoam.results.clockTime=$clockTime' --arg storageBenchmarkName $storageBenchmarkName --arg processesPerNode $processesPerNode --arg numberOfRanks $numProcs --arg numberOfIterations $numberOfIterations --arg clockTime $clockTime)
+    benchmarkData=$(jq -n '.openfoam.results.name=$storageBenchmarkName | .openfoam.results.numberOfRanks=$numProcs | .openfoam.results.processorsPerNode=$processesPerNode | .openfoam.results.numberOfIterations=$numberOfIterations | .openfoam.results.clockTime=$clockTime' --arg storageBenchmarkName $storageBenchmarkName --arg processesPerNode $processesPerNode --arg numberOfRanks $numProcs --arg numberOfIterations $numberOfIterations --arg clockTime $clockTime)
 
 }
