@@ -7,7 +7,7 @@ function run_benchmark {
 
     for NNODES in $nnodes_list; do
         for PPN in $ppn_list; do
-            execute "create_case_${NNODES}x${PPN}" ssh hpcuser@${public_ip} "ssh \$(cat bin/hostlist) 'cd /mnt/resource/scratch && ./$storageBenchmarkName/create_case.sh $NNODES $PPN'"
+            execute "create_case_${NNODES}x${PPN}" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd /mnt/resource/scratch && ./$storageBenchmarkName/create_case.sh $NNODES $PPN'"
             decomposedCase=${storageBenchmarkName}_${NNODES}x${PPN}
             execute "copy_$decomposedCase" scp hpcuser@${public_ip}:/mnt/resource/scratch/$decomposedCase.tar .
             execute "upload_$decomposedCase" az storage blob upload \
