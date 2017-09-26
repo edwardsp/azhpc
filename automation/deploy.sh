@@ -29,6 +29,10 @@ telemetryData="{ \"id\" : \"$(uuidgen)\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
+
+        timingData=$(cat $LOGDIR/times.csv | jq -s -R 'split("\n") | map(select(. != "")) | map(split(",") | map(select(. != ""))) | map({"event": .[0],"duration": .[1]})')
+        telemetryData="$(jq '.timing=$data' --argjson data "$timingData" <<< $telemetryData)"
+        
         echo $telemetryData > $LOGDIR/telemetry.json
         if [ "$logToStorage" = true ]; then
                 $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$telemetryData"
