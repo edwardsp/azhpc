@@ -124,7 +124,7 @@ get_files '*_to_*_pingpong.log'
 for i in $LOGDIR/*_to_*_pingpong.log; do
         src=$(echo ${i##*/} | cut -d'_' -f1)
         dst=$(echo ${i##*/} | cut -d'_' -f3)
-        cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t[usec]":.[2],"Mbytes/sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
+        cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t_usec":.[2],"Mbytes_sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
 done
 ringpingpongData=$(jq -s add $LOGDIR/*_to_*_pingpong.json)
 telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongData" <<< $telemetryData)"
