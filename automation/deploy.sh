@@ -122,7 +122,7 @@ telemetryData="$(jq '.stream.results=$data' --argjson data "$stream_results" <<<
 execute "get_linpack" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
 execute "run_linpack" ssh hpcuser@${public_ip} "pdsh 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n $linpack_N -p $linpack_P -q $linpack_Q -nb $linpack_NB | grep WC00C2R2'"
 linpack_results="$(cat $(get_log "run_linpack") | jq -s -R 'split("\n") | map(select(contains("WC00C2R2"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"duration": .[6],"gflops": .[7]})')"
-telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB, PeakGflops:$linpack_Peak}" <<< $telemetryData)"
+telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB}" <<< $telemetryData)"
 telemetryData="$(jq '.singlehpl.results=$data' --argjson data "$linpack_results" <<< $telemetryData)"
 
 # run the ring pingpong benchmark
@@ -140,13 +140,7 @@ telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongD
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 100000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
 allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
-echo "allReduceData"
-echo "$allreduceData"
-echo "telemetryData"
-echo "$telemetryData"
 telemetryData="$(jq '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" <<< $telemetryData)"
-echo "telemetryData"
-echo "$telemetryData"
 # run the benchmark function
 benchmarkData="{}"
 run_benchmark
