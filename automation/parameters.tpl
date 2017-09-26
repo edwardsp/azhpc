@@ -36,3 +36,10 @@ cosmos_account=
 cosmos_database=
 cosmos_collection=
 cosmos_key=
+
+# openfoam parameters
+storageAccountName=paedwar
+storageContainerName=azhpc
+storageBenchmarkPath=benchmarks
+storageBenchmarkName=motorbike82M
+storageSasKey=
