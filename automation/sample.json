@@ -9,13 +9,11 @@
     "provisioningState": "Succeeded",
     "deploymentTimestamp": "2017-09-25T10:02:40.795684+00:00",
     "correlationId":"xxxxxx",
-    "deploymentDuration":400,
     "clusterDeployment": {
         "sshretries": "1",
         "status": "success"
     },
     "stream": {
-        "Threshold":70000,
         "results": [
             {
                 "hostname": "az41397c00000E",
@@ -88,8 +86,7 @@
             "N": 69120,
             "P": 1,
             "Q": 2,
-            "NB": 192,
-            "PeakGflops": "691.2"
+            "NB": 192
         },
         "results": [
             {
