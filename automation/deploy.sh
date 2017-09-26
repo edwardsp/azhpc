@@ -5,7 +5,7 @@ source "$DIR/common.sh"
 paramsFile=$1
 echo "Reading parameters from: $paramsFile"
 source $paramsFile
-required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount rsaPublicKey rootLogDir linpack_N linpack_P linpack_Q linpack_NB linpack_Peak
+required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount processesPerNode rsaPublicKey rootLogDir linpack_N linpack_P linpack_Q linpack_NB linpack_Peak
 if [ "$logToStorage" = true ]; then
         required_envvars cosmos_account cosmos_database cosmos_collection cosmos_key logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
 fi
@@ -131,6 +131,12 @@ for i in $LOGDIR/*_to_*_pingpong.log; do
 done
 ringpingpongData=$(jq -s add $LOGDIR/*_to_*_pingpong.json)
 telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongData" <<< $telemetryData)"
+
+# run the allreduce benchmark
+numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
+execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 100000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
+allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
+telemetryData="$(jq '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" <<< $telemetryData)"
 
 # run the benchmark function
 benchmarkData="{}"

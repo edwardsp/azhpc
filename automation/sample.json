@@ -8,7 +8,7 @@
     "instanceCount": 16,
     "provisioningState": "Succeeded",
     "deploymentTimestamp": "2017-09-25T10:02:40.795684+00:00",
-    "correlationId":"xxxxxx",
+    "correlationId": "xxxxxx",
     "clusterDeployment": {
         "sshretries": "1",
         "status": "success"
@@ -185,6 +185,15 @@
             ],
             "name": "LeMans_100M",
             "version": "12.02.010"
+        },
+        "openfoam": {
+            "results": {
+                "name": "motorbike82M",
+                "numberOfRanks": "256",
+                "processorsPerNode": "16",
+                "numberOfIterations": "50",
+                "clockTime": "184"
+            }
         }
     }
 }
