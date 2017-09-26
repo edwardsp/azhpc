@@ -11,7 +11,7 @@ function run_benchmark() {
     niters=$(bc <<< "$numberOfIterations + 1")
     execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i \"s/^endTime .*;$/endTime ${niters};/g\" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
 
-    of_logfile=$(getlog run_openfoam_benchmark)
+    of_logfile=$(get_log run_openfoam_benchmark)
     start_time=$(grep ExecutionTime $of_logfile | head -n1 | cut -d' ' -f8)
     end_time=$(grep ExecutionTime $of_logfile | tail -n1 | cut -d' ' -f8)
     clockTime=$(echo "$end_time - $start_time" | bc)
