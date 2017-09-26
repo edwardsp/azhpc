@@ -19,6 +19,8 @@ function run_benchmark() {
 
     get_files '*.xml' 
 
+    arr=($(grep "  62  " $(get_log "run_starccm_benchmark") | awk '{print $8","$9}'))
+
     for filename in ${LOGDIR}/*.xml; do
             name=$(xmllint --xpath "string(/Benchmark/Name)" $filename)
             version=$(xmllint --xpath "string(/Benchmark/Version)" $filename)
@@ -28,7 +30,9 @@ function run_benchmark() {
             for i in $(seq 1 $nbsamples); do
                     avgtime=$(xmllint --xpath "string(/Benchmark/BenchmarkSamples/Sample[$i]/AverageElapsedTime)" $filename)
                     workers=$(xmllint --xpath "string(/Benchmark/BenchmarkSamples/Sample[$i]/NumberOfWorkers)" $filename)
-                    jsonLine=$(jq -n '.avgelapsedtime=$avgtime | .workers=$workers ' --arg avgtime $avgtime --arg workers $workers)
+                    CD=$(echo ${arr[0]} | cut -d',' -f1)
+                    CL=$(echo ${arr[0]} | cut -d',' -f2)
+                    jsonLine=$(jq -n '.avgelapsedtime=$avgtime | .workers=$workers | .cd=$cd | .cl=$cl' --arg avgtime $avgtime --arg workers $workers --arg cd $CD --arg cl $CL)
                     benchmarkData=$(jq '.starccm.results[.starccm.results| length] += $data' --argjson data "$jsonLine" <<< $benchmarkData)
             done
     done
