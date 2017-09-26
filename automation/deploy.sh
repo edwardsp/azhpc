@@ -112,7 +112,7 @@ telemetryData="$(jq ".clusterDeployment.status=\"success\"" <<< $telemetryData)"
 
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
 bad_nodes=$(grep fail $(get_log "show_bad_nodes") | wc -l)
-if [ "$bad_nodes" -ne "0" ]; do
+if [ "$bad_nodes" -ne "0" ]; then
         echo "Error: $bad_nodes hosts do not have IB working."
         telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
         clear_up
