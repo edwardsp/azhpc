@@ -111,6 +111,13 @@ fi
 telemetryData="$(jq ".clusterDeployment.status=\"success\"" <<< $telemetryData)"
 
 execute "show_bad_nodes" ssh hpcuser@${public_ip} testForBadNodes
+bad_nodes=$(grep fail $(get_log "show_bad_nodes") | wc -l)
+if [ "$bad_nodes" -ne "0" ]; do
+        echo "Error: $bad_nodes hosts do not have IB working."
+        telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
+        clear_up
+        exit 1
+fi
 
 # run the STREAM benchmark
 execute "get_stream" ssh hpcuser@${public_ip} 'wget https://paedwar.blob.core.windows.net/public/stream.96GB && chmod +x stream.96GB'
