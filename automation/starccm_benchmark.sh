@@ -21,6 +21,7 @@ function run_benchmark() {
 
     arr=($(grep "  62  " $(get_log "run_starccm_benchmark") | awk '{print $8","$9}'))
 
+    benchmarkData="{}"
     for filename in ${LOGDIR}/*.xml; do
             name=$(xmllint --xpath "string(/Benchmark/Name)" $filename)
             version=$(xmllint --xpath "string(/Benchmark/Version)" $filename)
