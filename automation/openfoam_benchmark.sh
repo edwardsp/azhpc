@@ -7,5 +7,15 @@ function run_benchmark() {
 
     numProcs=$(bc <<< "$instanceCount * $processesPerNode")
 
-    execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i \"s/^endTime .*;$/endTime ${numberOfIterations};/g\" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
+    # set one extra iteration to run as we will calculate by taking the end of last iteration minus the end of first iteration (therefore no IO)
+    niters=$(bc <<< "$numberOfIterations + 1")
+    execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i \"s/^endTime .*;$/endTime ${niters};/g\" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
+
+    of_logfile=$(getlog run_openfoam_benchmark)
+    start_time=$(grep ExecutionTime $of_logfile | head -n1 | cut -d' ' -f8)
+    end_time=$(grep ExecutionTime $of_logfile | tail -n1 | cut -d' ' -f8)
+    clockTime=$(echo "$end_time - $start_time" | bc)
+
+    benchmarkData=$(jq -n '.openfoam.results.name=$storageBenchmarkName | openfoam.results.numberOfRanks=$numProcs | openfoam.results.processorsPerNode=$processesPerNode | openfoam.results.numberOfIterations=$numberOfIterations | openfoam.results.clockTime=$clockTime' --arg storageBenchmarkName $storageBenchmarkName --arg processesPerNode $processesPerNode --arg numberOfRanks $numProcs --arg numberOfIterations $numberOfIterations --arg clockTime $clockTime)
+
 }
