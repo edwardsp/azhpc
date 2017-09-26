@@ -82,7 +82,7 @@ execute "deploy_azhpc" az group deployment create \
 deploymentTime=$(grep deploy_azhpc $LOGDIR/times.csv | cut -d',' -f2)
 
 telemetryData="$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp | .correlationId=$data.properties.correlationId' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)"
-telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< telemetryData)"
+telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< $telemetryData)"
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
