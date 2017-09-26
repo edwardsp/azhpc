@@ -9,8 +9,8 @@ mkdir -p /mnt/resource/scratch/applications
 mkdir -p /mnt/resource/scratch/INSTALLERS
 
 cd /mnt/resource/scratch/INSTALLERS
-sudo yum install -y epel*
-sudo yum install -y axel libXext
+
+sudo yum install -y libXext libXt
 axel -q -n 50 http://azbenchmarkstorage.blob.core.windows.net/cdadapcobenchmarkstorage/STAR-CCM+12.02.010_01_linux-x86_64.tar.gz
 tar xzf STAR-CCM+12.02.010_01_linux-x86_64.tar.gz
 
