@@ -79,7 +79,10 @@ execute "deploy_azhpc" az group deployment create \
     --template-uri "https://raw.githubusercontent.com/$githubUser/azhpc/$githubBranch/azuredeploy.json" \
     --parameters "$parameters"
 
-telemetryData="$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)"
+deploymentTime=$(grep deploy_azhpc $LOGDIR/times.csv | cut -d',' -f2)
+
+telemetryData="$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp | .correlationId=$data.properties.correlationId' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)"
+telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< $telemetryData)"
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
@@ -124,7 +127,7 @@ get_files '*_to_*_pingpong.log'
 for i in $LOGDIR/*_to_*_pingpong.log; do
         src=$(echo ${i##*/} | cut -d'_' -f1)
         dst=$(echo ${i##*/} | cut -d'_' -f3)
-        cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t[usec]":.[2],"Mbytes/sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
+        cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t_usec":.[2],"Mbytes_sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
 done
 ringpingpongData=$(jq -s add $LOGDIR/*_to_*_pingpong.json)
 telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongData" <<< $telemetryData)"
