@@ -7,5 +7,5 @@ function run_benchmark() {
 
     numProcs=$(bc <<< "$instanceCount * $processesPerNode")
 
-    execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i "s/^endTime .*;$/endTime ${numberOfIterations};/g" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
+    execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i \"s/^endTime .*;$/endTime ${numberOfIterations};/g\" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
 }
