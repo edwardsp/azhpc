@@ -18,7 +18,7 @@ curl -s \
         -H "Content-Type: application/json" \
         -H "Authorization: $auth_token" \
         -X POST \
-        --data "@$jsonFile"
+        --data "@$jsonFile" \
         https://$account.documents.azure.com:443/dbs/$database/colls/$collection/docs \
         | jq
 
