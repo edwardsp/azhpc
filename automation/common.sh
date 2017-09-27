@@ -18,16 +18,24 @@ function required_envvars {
 
 # a variable to store the last duration for the execute call
 execute_duration=0
+execute_timeout=false
+exectimeo=1800
 
 function execute {
         task=$1
+	execute_timeout=false
         SECONDS=0
         echo -n "Executing: $2"
         for a in "${@:3}"; do
                 echo -n " '$(echo -n $a | tr '\n' ' ')'"
         done
         echo
-        $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
+	timeout $exectimeo $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
+	if (($? >= 124))
+	do
+	   echo "Timeout during execution" | tee $LOGDIR/${task}.log
+	   execute_timeout=true
+	done
         execute_duration=$SECONDS
         echo "$task,$execute_duration" | tee -a $LOGDIR/times.csv
 
@@ -46,6 +54,7 @@ function execute {
                         --sas "$logStorageSasKey"
         fi
 }
+
 
 function error_message {
         echo "ERROR: $1" | tee $LOGDIR/error.log
