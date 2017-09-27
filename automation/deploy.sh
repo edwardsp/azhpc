@@ -56,7 +56,7 @@ if [ "$(az group exists --name $resource_group)" = "true" ]; then
 fi
 
 # create the resource group
-execute "create_resource_group" az group create --name "$resource_group" --location "$location --tags 'workload=e2ehpc'"
+execute "create_resource_group" az group create --name "$resource_group" --location "$location" --tags "workload=e2ehpc"
 subscriptionId=$(jq '.id' $(get_log "create_resource_group") | cut -d'/' -f3)
 telemetryData="$(jq ".subscription=\"$subscriptionId\" | .location=\$data.location | .resourceGroup=\$data.name" --argjson data "$(<$(get_log "create_resource_group"))" <<< $telemetryData)"
 
