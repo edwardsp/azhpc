@@ -1,7 +1,7 @@
 my_uid=$(uuidgen | cut -c1-6)
 
 githubUser=$(git config --get remote.origin.url | cut -d'/' -f4)
-githubBranch=$(git status | sed -n 's/[# ]*On branch \([^ ]\+\)/\1/p')
+githubBranch=$(git rev-parse --abbrev-ref HEAD)
 
 resource_group=SETNAME-azhpc-${my_uid}
 location="North Central US"
