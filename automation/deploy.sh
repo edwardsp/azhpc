@@ -31,12 +31,14 @@ function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
 
         timingData=$(cat $LOGDIR/times.csv | jq -s -R 'split("\n") | map(select(. != "")) | map(split(",") | map(select(. != ""))) | map({"event": .[0],"duration": .[1]})')
-        jq -c -n '.timing=$data' --argjson data "$timingData" | tee timing.json
+        jq -c -n '.timing=$data' --argjson data "$timingData" | tee $LOGDIR/timing.json
         #telemetryData="$(jq '.timing=$data' --argjson data "$timingData" <<< $telemetryData)"
         
         #echo $telemetryData > $LOGDIR/telemetry.json
+        jq -c '.' <<< $telemetryData | $LOGDIR/root.json
 
-        jq -c -s '.' $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json <<< $telemetryData | tee $LOGDIR/telemetry.json
+        # merge all the json data into one see https://stackoverflow.com/questions/19529688/how-to-merge-2-json-file-using-jq
+        jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json | tee $LOGDIR/telemetry.json
 
         if [ "$logToStorage" = true ]; then
                 $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json"
