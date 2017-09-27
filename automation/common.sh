@@ -32,10 +32,11 @@ function execute {
         echo
 	timeout $exectimeo $2 "${@:3}" 2>&1 | tee $LOGDIR/${task}.log
 	if (($? >= 124))
-	do
+	then
 	   echo "Timeout during execution" | tee $LOGDIR/${task}.log
 	   execute_timeout=true
-	done
+	fi
+        
         execute_duration=$SECONDS
         echo "$task,$execute_duration" | tee -a $LOGDIR/times.csv
 
