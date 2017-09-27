@@ -122,13 +122,13 @@ if [ "$bad_nodes" -ne "0" ]; then
 fi
 
 # run the STREAM benchmark
-execute "get_stream" ssh hpcuser@${public_ip} 'wget https://paedwar.blob.core.windows.net/public/stream.96GB && chmod +x stream.96GB'
+execute "get_stream" ssh hpcuser@${public_ip} "wget 'https://ninalogs.blob.core.windows.net/application/stream.96GB?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' && chmod +x stream.96GB"
 execute "run_stream" ssh hpcuser@${public_ip} pdsh -f $PDSH_MAX_CONNECTIONS 'KMP_AFFINITY=scatter ./stream.96GB'
 stream_results=$(cat $(get_log "run_stream") | jq -s -R 'split("\n") | map(select(contains("Triad"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"triad":.[2]})')
 telemetryData="$(jq '.stream.results=$data' --argjson data "$stream_results" <<< $telemetryData)"
 
 # run the LINPACK benchmark
-execute "get_linpack" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
+execute "get_linpack" ssh hpcuser@${public_ip} "wget 'https://ninalogs.blob.core.windows.net/application/hpl.tgz?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' -q -O -  | tar zx --skip-old-files"
 execute "run_linpack" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n $linpack_N -p $linpack_P -q $linpack_Q -nb $linpack_NB | grep WC00C2R2'"
 linpack_results="$(cat $(get_log "run_linpack") | jq -s -R 'split("\n") | map(select(contains("WC00C2R2"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"duration": .[6],"gflops": .[7]})')"
 telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB}" <<< $telemetryData)"

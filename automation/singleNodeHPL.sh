@@ -1,7 +1,7 @@
 required_envvars vmSku
 
 function run_benchmark() {
-	execute "get_hpl" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
+	execute "get_hpl" ssh hpcuser@${public_ip} "wget 'https://ninalogs.blob.core.windows.net/application/hpl.tgz?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' -q -O -  | tar zx --skip-old-files"
 	
 	scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
