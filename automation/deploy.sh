@@ -36,10 +36,10 @@ function clear_up {
         
         #echo $telemetryData > $LOGDIR/telemetry.json
 
-        jq -c -s '.' $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json <<< $telemetryData | tee telemetry.json
+        jq -c -s '.' $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json <<< $telemetryData | tee $LOGDIR/telemetry.json
 
         if [ "$logToStorage" = true ]; then
-                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$telemetryData"
+                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json"
         fi
 }
 
