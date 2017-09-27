@@ -9,7 +9,7 @@ mkdir -p /mnt/resource/scratch/applications
 mkdir -p /mnt/resource/scratch/INSTALLERS
 
 cd /mnt/resource/scratch/INSTALLERS
-wget -q http://azbenchmarkstorage.blob.core.windows.net/cdadapcobenchmarkstorage/STAR-CCM+11.04.012_01_linux-x86_64-r8.tar.gz -O - | tar zx
+wget -q 'http://ninalogs.blob.core.windows.net/application/STAR-CCM+11.04.012_01_linux-x86_64-r8.tar.gz?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' -O - | tar zx
 
 cd /mnt/resource/scratch/INSTALLERS/starccm+_11.04.012
 
