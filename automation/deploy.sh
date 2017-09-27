@@ -35,7 +35,7 @@ function clear_up {
         #telemetryData="$(jq '.timing=$data' --argjson data "$timingData" <<< $telemetryData)"
         
         #echo $telemetryData > $LOGDIR/telemetry.json
-        jq -c '.' <<< $telemetryData | $LOGDIR/root.json
+        jq -c '.' <<< $telemetryData | tee $LOGDIR/root.json
 
         # merge all the json data into one see https://stackoverflow.com/questions/19529688/how-to-merge-2-json-file-using-jq
         jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json | tee $LOGDIR/telemetry.json
