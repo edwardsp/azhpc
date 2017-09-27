@@ -7,7 +7,7 @@ PDSH_MAX_CONNECTIONS=100
 paramsFile=$1
 echo "Reading parameters from: $paramsFile"
 source $paramsFile
-required_envvars githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount processesPerNode rsaPublicKey rootLogDir linpack_N linpack_P linpack_Q linpack_NB
+required_envvars rootLogDir githubUser githubBranch resource_group vmSku vmssName computeNodeImage instanceCount processesPerNode rsaPublicKey rootLogDir linpack_N linpack_P linpack_Q linpack_NB
 if [ "$logToStorage" = true ]; then
         required_envvars cosmos_account cosmos_database cosmos_collection cosmos_key logStorageAccountName logStorageContainerName logStoragePath logStorageSasKey
 fi
