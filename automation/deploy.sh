@@ -33,11 +33,15 @@ function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
 
         timingData=$(cat $LOGDIR/times.csv | jq -s -R 'split("\n") | map(select(. != "")) | map(split(",") | map(select(. != ""))) | map({"event": .[0],"duration": .[1]})')
-        telemetryData="$(jq '.timing=$data' --argjson data "$timingData" <<< $telemetryData)"
+        jq -c -n '.timing=$data' --argjson data "$timingData" | tee $LOGDIR/timing.json
         
-        echo $telemetryData > $LOGDIR/telemetry.json
+        jq -c '.' <<< $telemetryData | tee $LOGDIR/root.json
+
+        # merge all the json data into one see https://stackoverflow.com/questions/19529688/how-to-merge-2-json-file-using-jq
+        jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json | tee $LOGDIR/telemetry.json
+
         if [ "$logToStorage" = true ]; then
-                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$telemetryData"
+                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json"
         fi
 }
 
@@ -54,7 +58,7 @@ if [ "$(az group exists --name $resource_group)" = "true" ]; then
 fi
 
 # create the resource group
-execute "create_resource_group" az group create --name "$resource_group" --location "$location"
+execute "create_resource_group" az group create --name "$resource_group" --location "$location" --tags "workload=e2ehpc"
 subscriptionId=$(jq '.id' $(get_log "create_resource_group") | cut -d'/' -f3)
 telemetryData="$(jq ".subscription=\"$subscriptionId\" | .location=\$data.location | .resourceGroup=\$data.name" --argjson data "$(<$(get_log "create_resource_group"))" <<< $telemetryData)"
 
@@ -125,14 +129,14 @@ fi
 execute "get_stream" ssh hpcuser@${public_ip} 'wget https://paedwar.blob.core.windows.net/public/stream.96GB && chmod +x stream.96GB'
 execute "run_stream" ssh hpcuser@${public_ip} pdsh -f $PDSH_MAX_CONNECTIONS 'KMP_AFFINITY=scatter ./stream.96GB'
 stream_results=$(cat $(get_log "run_stream") | jq -s -R 'split("\n") | map(select(contains("Triad"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"triad":.[2]})')
-telemetryData="$(jq '.stream.results=$data' --argjson data "$stream_results" <<< $telemetryData)"
+jq -c -n '.stream.results=$data' --argjson data "$stream_results" | tee $LOGDIR/stream.json
 
 # run the LINPACK benchmark
 execute "get_linpack" ssh hpcuser@${public_ip} "wget 'https://pintaprod.blob.core.windows.net/private/hpl.tgz?sv=2016-05-31&si=read&sr=b&sig=5ZluFkKL%2F3GyNexDVQBB1sEmUdHpkutLlXaLfE%2BmUN4%3D' -q -O -  | tar zx --skip-old-files"
 execute "run_linpack" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'cd hpl; mpirun -np 2 -perhost 2 ./xhpl_intel64_static -n $linpack_N -p $linpack_P -q $linpack_Q -nb $linpack_NB | grep WC00C2R2'"
 linpack_results="$(cat $(get_log "run_linpack") | jq -s -R 'split("\n") | map(select(contains("WC00C2R2"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"duration": .[6],"gflops": .[7]})')"
-telemetryData="$(jq ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB}" <<< $telemetryData)"
-telemetryData="$(jq '.singlehpl.results=$data' --argjson data "$linpack_results" <<< $telemetryData)"
+singlehplJson="$(jq -c -n ".singlehpl.parameters={N:$linpack_N, P:$linpack_P, Q:$linpack_Q, NB:$linpack_NB}")"
+jq -c '.singlehpl.results=$data' --argjson data "$linpack_results" <<< $singlehplJson | tee $LOGDIR/singlehpl.json
 
 # run the ring pingpong benchmark
 execute "run_ring_pingpong" ssh hpcuser@${public_ip} 'ssh $(head -n1 bin/hostlist) ./azhpc/benchmarks/run_ring_pingpong.sh'
@@ -143,17 +147,17 @@ for i in $LOGDIR/*_to_*_pingpong.log; do
         cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t_usec":.[2],"Mbytes_sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
 done
 ringpingpongData=$(jq -s add $LOGDIR/*_to_*_pingpong.json)
-telemetryData="$(jq '.ringpingpong.results=$data' --argjson data "$ringpingpongData" <<< $telemetryData)"
+jq -c -n '.ringpingpong.results=$data' --argjson data "$ringpingpongData" | tee $LOGDIR/ringpingpong.json
 
 # run the allreduce benchmark
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 10000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
 allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
-telemetryData="$(jq '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" <<< $telemetryData)"
+jq -c -n '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" | tee $LOGDIR/allreduce.json
+
 # run the benchmark function
 benchmarkData="{}"
 run_benchmark
-
-telemetryData="$(jq '.benchmark=$data' --argjson data "$benchmarkData" <<< $telemetryData)"
+jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | $LOGDIR/benchmark.json
 
 clear_up
