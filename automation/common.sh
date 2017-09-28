@@ -81,7 +81,7 @@ function get_files {
                                 error_message "get_files: Not getting file $fullpath as it will overwrite local file ($LOGDIR/$fname)"
                                 continue
                         fi
-                        scp hpcuser@${public_ip}:$fullpath $LOGDIR 2>&1 >/dev/null
+                        scp -q hpcuser@${public_ip}:$fullpath $LOGDIR
                         if [ "$logToStorage" = true ]; then
                                 az storage blob upload \
                                         --account-name $logStorageAccountName \
