@@ -153,7 +153,7 @@ jq -c -n '.ringpingpong.results=$data' --argjson data "$ringpingpongData" | tee 
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 10000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
 if [ "$execute_timeout" = true ]; then
-        execute "hanging" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
+        execute "hanging_allreduce" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
         clear_up
         exit 1        
 else
@@ -165,7 +165,7 @@ fi
 benchmarkData="{}"
 run_benchmark
 if [ "$execute_timeout" = true ]; then
-        execute "hanging" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
+        execute "hanging_benchmark" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
 else
         jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | $LOGDIR/benchmark.json
 fi
