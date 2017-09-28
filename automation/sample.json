@@ -82,6 +82,25 @@
             }
         ]
     },
+    "allreduce": {
+        "processesPerNode": "16",
+        "results": [
+            {
+                "bytes": "8",
+                "repetitions": "10000",
+                "t_min_usec": "96.19",
+                "t_max_usec": "109.01",
+                "t_avg_usec": "102.77"
+            },
+            {
+                "bytes": "16",
+                "repetitions": "10000",
+                "t_min_usec": "63.30",
+                "t_max_usec": "72.98",
+                "t_avg_usec": "68.22"
+            }
+        ]
+    },
     "benchmark": {
         "starccm": {
             "results": [

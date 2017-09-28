@@ -15,7 +15,7 @@ function run_benchmark() {
         nps="${nps}$(bc <<< "$n * $processesPerNode")"
     done
 
-    execute "run_starccm_benchmark" ssh hpcuser@${public_ip} "starccm+ -np ${numProcs} -machinefile machinefile -power -podkey $podKey -rsh ssh -mpi intel -cpubind bandwidth -mppflags '-genv I_MPI_DAPL_PROVIDER ofa-v2-ib0 -genv I_MPI_DAPL_UD 0 -genv I_MPI_DYNAMIC_CONNECTION 0' /mnt/resource/scratch/LeMans_100M.sim -benchmark:\"-preclear -preits 40 -nits 20 -nps $nps\""
+    execute "run_starccm_benchmark" ssh hpcuser@${public_ip} "starccm+ -np ${numProcs} -machinefile machinefile -power -podkey $podKey -rsh ssh -mpi intel -cpubind bandwidth,v -mppflags '-genv I_MPI_DAPL_PROVIDER ofa-v2-ib0 -genv I_MPI_DAPL_UD 0 -genv I_MPI_DYNAMIC_CONNECTION 0' /mnt/resource/scratch/LeMans_100M.sim -benchmark:\"-preclear -preits 40 -nits 20 -nps $nps\""
 
     get_files '*.xml' 
 
