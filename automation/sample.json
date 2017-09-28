@@ -134,6 +134,9 @@
         "scenario": "allreduce",
         "nodes": [
             {
+                "hostname": "az9ac3b1000002"
+            },
+            {
                 "hostname": "az9ac3b1000003"
             },
             {
