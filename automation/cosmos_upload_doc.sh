@@ -19,6 +19,5 @@ curl -s \
         -H "Authorization: $auth_token" \
         -X POST \
         --data "@$jsonFile" \
-        https://$account.documents.azure.com:443/dbs/$database/colls/$collection/docs \
-        | jq
+        https://$account.documents.azure.com:443/dbs/$database/colls/$collection/docs >$LOGDIR/curl_upload_cosmosdb.result
 
