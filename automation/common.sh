@@ -30,7 +30,11 @@ function execute {
                 echo -n " '$(echo -n $a | tr '\n' ' ')'"
         done
         echo
+<<<<<<< HEAD
 	timeout $exectimeo $2 "${@:3}" > $LOGDIR/${task}.log 2>&1 
+=======
+	timeout $exectimeo $2 "${@:3}" >$LOGDIR/${task}.log 2>&1 
+>>>>>>> upstream/master
 	if (($? >= 124))
 	then
                 echo "Timeout during execution" | tee -a $LOGDIR/${task}.log
@@ -81,7 +85,7 @@ function get_files {
                                 error_message "get_files: Not getting file $fullpath as it will overwrite local file ($LOGDIR/$fname)"
                                 continue
                         fi
-                        scp hpcuser@${public_ip}:$fullpath $LOGDIR 2>&1 >/dev/null
+                        scp -q hpcuser@${public_ip}:$fullpath $LOGDIR
                         if [ "$logToStorage" = true ]; then
                                 az storage blob upload \
                                         --account-name $logStorageAccountName \

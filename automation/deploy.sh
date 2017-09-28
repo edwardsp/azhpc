@@ -154,8 +154,7 @@ for i in $LOGDIR/*_to_*_pingpong.log; do
         dst=$(echo ${i##*/} | cut -d'_' -f3)
         cat $LOGDIR/${src}_to_${dst}_pingpong.log | grep -A27 'Benchmarking PingPong' | tail -n24 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"src":"'$src'","dst":"'$dst'","bytes":.[0],"repetitions":.[1],"t_usec":.[2],"Mbytes_sec":.[3]})' >$LOGDIR/${src}_to_${dst}_pingpong.json
 done
-ringpingpongData=$(jq -s add $LOGDIR/*_to_*_pingpong.json)
-jq -c -n '.ringpingpong.results=$data' --argjson data "$ringpingpongData" | tee $LOGDIR/ringpingpong.json
+jq -s 'flatten | {"ringpingpong":{"results":.}}' $LOGDIR/*_to_*_pingpong.json
 
 # run the allreduce benchmark
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
@@ -173,7 +172,13 @@ benchmarkData="{}"
 run_benchmark
 jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
 if [ "$execute_timeout" = true ]; then
+<<<<<<< HEAD
         check_hanging_nodes "benchmark"
+=======
+        execute "hanging_benchmark" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
+else
+        jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
+>>>>>>> upstream/master
 fi
 
 clear_up
