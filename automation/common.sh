@@ -47,14 +47,14 @@ function execute {
                         --file $LOGDIR/$task.log \
                         --name $logStoragePath/$LOGDIR/$task.log \
                         --sas "$logStorageSasKey" \
-                        > /dev/null || echo "Failed to upload blob" 
+                        2>&1 > /dev/null || echo "Failed to upload blob" 
                 az storage blob upload \
                         --account-name $logStorageAccountName \
                         --container-name $logStorageContainerName \
                         --file $LOGDIR/times.csv \
                         --name $logStoragePath/$LOGDIR/times.csv \
                         --sas "$logStorageSasKey" \
-                        > /dev/null || echo "Failed to upload blob"
+                        2>&1 > /dev/null || echo "Failed to upload blob"
         fi
 }
 
@@ -68,7 +68,7 @@ function error_message {
                         --file $LOGDIR/times.log \
                         --name $logStoragePath/$LOGDIR/error.log \
                         --sas "$logStorageSasKey" \
-                        > /dev/null || echo "Failed to upload blob"
+                        2>&1 > /dev/null || echo "Failed to upload blob"
         fi
 }
 
@@ -89,7 +89,7 @@ function get_files {
                                         --file $LOGDIR/$fname \
                                         --name $logStoragePath/$LOGDIR/$fname \
                                         --sas "$logStorageSasKey" \
-                                        > /dev/null || echo "Failed to upload blob"
+                                        2>&1 > /dev/null || echo "Failed to upload blob"
                         fi
                 done
         done
