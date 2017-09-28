@@ -38,12 +38,20 @@ function clear_up {
         jq -c '.' <<< $telemetryData | tee $LOGDIR/root.json
 
         # merge all the json data into one see https://stackoverflow.com/questions/19529688/how-to-merge-2-json-file-using-jq
-        jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json | tee $LOGDIR/telemetry.json
+        jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json $LOGDIR/failure.json | tee $LOGDIR/telemetry.json
 
         if [ "$logToStorage" = true ]; then
                 $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json"
         fi
 }
+
+function check_hanging_nodes {       
+        scenario=$1
+        execute "hanging_$scenario" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
+        cat $(get_log "hanging_$scenario") | jq -s -R 'split("\n") | map(select(contains("exited"))) | map(split(":")) | map({"hostname": .[0]})' | tee $LOGDIR/tmp.json
+        jq -n '.failure.scenario=$scenario | .failure.nodes=$data ' --arg scenario "$scenario" --argfile data $LOGDIR/tmp.json | tee $LOGDIR/failure.json        
+}
+
 
 # assuming already logged in a the moment or use the Service Principal params
 if [ "$azLogin" != "" ]; then
@@ -152,22 +160,20 @@ jq -c -n '.ringpingpong.results=$data' --argjson data "$ringpingpongData" | tee 
 # run the allreduce benchmark
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 10000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
+allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
+jq -c -n '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" | tee $LOGDIR/allreduce.json
 if [ "$execute_timeout" = true ]; then
-        execute "hanging_allreduce" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
+        check_hanging_nodes "allreduce"
         clear_up
         exit 1        
-else
-        allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
-        jq -c -n '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" | tee $LOGDIR/allreduce.json
 fi
 
 # run the benchmark function
 benchmarkData="{}"
 run_benchmark
+jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | $LOGDIR/benchmark.json
 if [ "$execute_timeout" = true ]; then
-        execute "hanging_benchmark" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
-else
-        jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | $LOGDIR/benchmark.json
+        check_hanging_nodes "benchmark"
 fi
 
 clear_up
