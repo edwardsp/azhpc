@@ -171,7 +171,7 @@ fi
 # run the benchmark function
 benchmarkData="{}"
 run_benchmark
-jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | $LOGDIR/benchmark.json
+jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
 if [ "$execute_timeout" = true ]; then
         check_hanging_nodes "benchmark"
 fi
