@@ -163,10 +163,9 @@ fi
 # run the benchmark function
 benchmarkData="{}"
 run_benchmark
+jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
 if [ "$execute_timeout" = true ]; then
-        execute "hanging_benchmark" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
-else
-        jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
+        check_hanging_nodes "benchmark"
 fi
 
 clear_up
