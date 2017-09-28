@@ -173,11 +173,15 @@ run_benchmark
 jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
 if [ "$execute_timeout" = true ]; then
 <<<<<<< HEAD
+<<<<<<< HEAD
         check_hanging_nodes "benchmark"
 =======
         execute "hanging_benchmark" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
 else
         jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" | tee $LOGDIR/benchmark.json
+>>>>>>> upstream/master
+=======
+        check_hanging_nodes "benchmark"
 >>>>>>> upstream/master
 fi
 
