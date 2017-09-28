@@ -30,7 +30,7 @@ function execute {
                 echo -n " '$(echo -n $a | tr '\n' ' ')'"
         done
         echo
-	timeout $exectimeo $2 "${@:3}" 2>&1 > $LOGDIR/${task}.log
+	timeout $exectimeo $2 "${@:3}" >$LOGDIR/${task}.log 2>&1 
 	if (($? >= 124))
 	then
                 echo "Timeout during execution" | tee -a $LOGDIR/${task}.log
