@@ -130,6 +130,17 @@
             }
         }
     },
+    "failure": {
+        "scenario": "allreduce",
+        "nodes": [
+            {
+                "hostname": "az9ac3b1000003"
+            },
+            {
+                "hostname": "az9ac3b1000004"
+            }
+        ]
+    },
     "timing": [
         {
             "event": "create_resource_group",
