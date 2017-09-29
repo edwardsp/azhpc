@@ -52,6 +52,7 @@
 		"resourceLocation": "[resourceGroup().location]",
 		"namingInfix": "[toLower(parameters('vmssName'))]",
 		"jumpBoxName": "[concat(variables('namingInfix'),'jb')]",
+		"storageName": "[concat(variables('namingInfix'),'sa')]",
 		"jumpBoxIPConfigName": "[concat(variables('jumpBoxName'), 'ipconfig')]",
 		"jumpBoxNicName": "[concat(variables('jumpBoxName'), 'nic')]",
 		"addressPrefix": "10.0.0.0/16",
@@ -97,6 +98,15 @@
 		"storageApiVersion": "2015-06-15"
 	},
 	"resources": [
+		{
+			"type": "Microsoft.Storage/storageAccounts",
+			"name": "[variables('storageName')]",
+			"apiVersion": "[variables('storageApiVersion')]",
+			"location": "[variables('resourceLocation')]",
+			"properties": {
+				"accountType": "Standard_LRS"
+			}
+		},
 		{
 			"type": "Microsoft.Network/virtualNetworks",
 			"name": "[variables('virtualNetworkName')]",
@@ -272,6 +282,12 @@
 						"adminUsername": "hpcuser",
 						"adminPassword": "Microsoft123"
 					},
+					"diagnosticsProfile": {
+						"bootDiagnostics": {
+							"enabled": true,
+							"storageUri": "[concat('http://',variables('storageName'),'.blob.core.windows.net')]"
+						}
+					},
 					"networkProfile": {
 						"networkInterfaceConfigurations": [
 							{
@@ -296,7 +312,8 @@
 			},
 			"dependsOn": [
 				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-				"[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxName'))]"
+				"[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxName'))]",
+				"[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]"
 			]
 		}
 	]
