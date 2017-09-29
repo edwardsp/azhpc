@@ -95,16 +95,28 @@
 		"JBimageReference": "[variables('JBoxType')]",
 		"computeApiVersion": "2016-04-30-preview",
 		"networkApiVersion": "2016-03-30",
-		"storageApiVersion": "2015-06-15"
+		"storageApiVersion": "2016-01-01"
 	},
-	"resources": [
+	"resources": [	
 		{
 			"type": "Microsoft.Storage/storageAccounts",
+			"sku": {
+				"name": "Standard_LRS",
+				"tier": "Standard"
+			},
+			"kind": "Storage",
 			"name": "[variables('storageName')]",
 			"apiVersion": "[variables('storageApiVersion')]",
 			"location": "[variables('resourceLocation')]",
 			"properties": {
-				"accountType": "Standard_LRS"
+				"encryption": {
+					"keySource": "Microsoft.Storage",
+					"services": {
+						"blob": {
+							"enabled": false
+						}
+					}
+				}
 			}
 		},
 		{
