@@ -48,7 +48,7 @@ function clear_up {
 function check_hanging_nodes {       
         scenario=$1
         execute "hanging_$scenario" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
-        cat $(get_log "hanging_$scenario") | jq -s -R 'split("\n") | map(select(contains("exited"))) | map(split(":")) | map({"hostname": .[1]|ltrimstr(" ")})' | tee $LOGDIR/tmp.json
+        cat $(get_log "hanging_$scenario") | jq -s -R 'split("\n") | map(select(contains("exited"))) | map(split(":")) | map({"hostname": .[1]|ltrimstr(" ")})' >$LOGDIR/tmp.json
         jq -n '.failure.scenario=$scenario | .failure.nodes=$data ' --arg scenario "$scenario" --argfile data $LOGDIR/tmp.json >$LOGDIR/failure.json        
 }
 
