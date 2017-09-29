@@ -19,7 +19,8 @@ function required_envvars {
 # a variable to store the last duration for the execute call
 execute_duration=0
 execute_timeout=false
-exectimeo=1800
+execute_timeout_duration_default=1800
+execute_timeout_duration=$execute_timeout_duration_default
 
 function execute {
         task=$1
@@ -30,7 +31,7 @@ function execute {
                 echo -n " '$(echo -n $a | tr '\n' ' ')'"
         done
         echo
-	timeout $exectimeo $2 "${@:3}" >$LOGDIR/${task}.log 2>&1 
+	timeout $execute_timeout_duration $2 "${@:3}" >$LOGDIR/${task}.log 2>&1 
 	if (($? >= 124))
 	then
                 echo "Timeout during execution" | tee -a $LOGDIR/${task}.log
@@ -56,6 +57,7 @@ function execute {
                         --sas "$logStorageSasKey" \
                         2>&1 > /dev/null || echo "Failed to upload blob"
         fi
+        execute_timeout_duration=$execute_timeout_duration_default
 }
 
 

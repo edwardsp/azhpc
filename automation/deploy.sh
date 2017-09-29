@@ -106,6 +106,12 @@ public_ip=$(az network public-ip list --resource-group "$resource_group" --query
 
 execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
 working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
+if [ "$working_hosts" = "" ]; then
+        echo "Failed to get hosts."
+        telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
+        clear_up
+        exit 1
+fi
 retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         sleep 60
@@ -159,6 +165,7 @@ jq -s 'flatten | {"ringpingpong":{"results":.}}' $LOGDIR/*_to_*_pingpong.json >$
 # run the allreduce benchmark
 exectimeo=300
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
+execute_timeout_duration=300
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 10000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
 allreduceData=$(cat $(get_log run_allreduce) | grep -A6 "Benchmarking Allreduce" | tail -n2 | jq -s -R 'split("\n") | map(select(. != "")) | map(split(" ") | map(select(. != ""))) | map({"bytes":.[0],"repetitions":.[1],"t_min_usec":.[2],"t_max_usec":.[3],"t_avg_usec":.[4]})')
 jq -c -n '.allreduce.processesPerNode=$processesPerNode | .allreduce.results=$data' --arg processesPerNode $processesPerNode --argjson data "$allreduceData" >$LOGDIR/allreduce.json
