@@ -1,4 +1,4 @@
-required_envvars numberOfNodesToTest processesPerNode podKey licip
+required_envvars numberOfNodesToTest processesPerNode podKey
 
 function run_benchmark() {
     execute "install_starccm" ssh hpcuser@${public_ip} "./azhpc/install/install_StarCCM_1202.sh $podKey"
