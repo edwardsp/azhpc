@@ -122,7 +122,7 @@ if [ "$bad_nodes" -ne "0" ]; then
 fi
 
 # run the STREAM benchmark
-execute "get_stream" ssh hpcuser@${public_ip} "wget 'https://ninalogs.blob.core.windows.net/application/stream.96GB?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' && chmod +x stream.96GB"
+execute "get_stream" ssh hpcuser@${public_ip} "wget 'https://ninalogs.blob.core.windows.net/application/stream.96GB?sv=2017-04-17&ss=bfqt&srt=sco&sp=rw&se=2027-09-27T10:07:48Z&st=2017-09-27T02:07:48Z&spr=https&sig=IXNV8%2B2mGTuWoRvn5ZcHpdzY9MtEeqN8ootSz%2BLez2w%3D' -O stream.96GB && chmod +x stream.96GB"
 execute "run_stream" ssh hpcuser@${public_ip} pdsh -f $PDSH_MAX_CONNECTIONS 'KMP_AFFINITY=scatter ./stream.96GB'
 stream_results=$(cat $(get_log "run_stream") | jq -s -R 'split("\n") | map(select(contains("Triad"))) | map(split(" ") | map(select(. != ""))) | map({"hostname": .[0]|rtrimstr(":"),"triad":.[2]})')
 telemetryData="$(jq '.stream.results=$data' --argjson data "$stream_results" <<< $telemetryData)"
