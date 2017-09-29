@@ -14,7 +14,6 @@ rsaPublicKey=$(cat ~/.ssh/id_rsa.pub)
 
 numberOfNodesToTest="8 16"
 podKey=
-licip=
 
 linpack_N=69120
 linpack_P=1
