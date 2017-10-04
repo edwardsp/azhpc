@@ -6,7 +6,6 @@ collection=$3
 key=$4
 jsonFile=$5
 
-LOGDIR=$(dirname $jsonFile)
 date_now="$(date -u +%a,\ %d\ %b\ %Y\ %H:%M:%S\ GMT)"
 text="post\ndocs\ndbs/$database/colls/$collection\n$(echo "$date_now" | tr '[:upper:]' '[:lower:]')\n\n"
 signature="$(echo -ne "$text" | openssl dgst -sha256 -hmac "$(echo "$key" | base64 --decode)" -binary | base64)"
@@ -20,5 +19,4 @@ curl -s \
         -H "Authorization: $auth_token" \
         -X POST \
         --data "@$jsonFile" \
-        https://$account.documents.azure.com:443/dbs/$database/colls/$collection/docs >$LOGDIR/curl_upload_cosmosdb.result
-
+        https://$account.documents.azure.com:443/dbs/$database/colls/$collection/docs

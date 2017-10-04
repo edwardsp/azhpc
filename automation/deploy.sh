@@ -27,7 +27,7 @@ LOGDIR=$rootLogDir/${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 
 # creating a new document with a unique id (intention to put in documentdb)
-telemetryData="{ \"id\" : \"$(uuidgen)\" }"
+telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(dirname $LOGDIR)\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
@@ -41,7 +41,7 @@ function clear_up {
         jq -c -s 'reduce .[] as $item ({}; . * $item)' $LOGDIR/root.json $LOGDIR/singlehpl.json $LOGDIR/stream.json $LOGDIR/timing.json $LOGDIR/ringpingpong.json $LOGDIR/allreduce.json $LOGDIR/benchmark.json $LOGDIR/failure.json >$LOGDIR/telemetry.json
 
         if [ "$logToStorage" = true ]; then
-                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json"
+                $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json" >$LOGDIR/curl_upload_cosmosdb.result
         fi
 }
 
