@@ -163,6 +163,7 @@ done
 jq -s 'flatten | {"ringpingpong":{"results":.}}' $LOGDIR/*_to_*_pingpong.json >$LOGDIR/ringpingpong.json
 
 # run the allreduce benchmark
+exectimeo=300
 numberOfProcesses=$(bc <<< "$instanceCount * $processesPerNode")
 execute_timeout_duration=300
 execute "run_allreduce" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'mpirun -np $numberOfProcesses -ppn $processesPerNode -hostfile \$HOME/bin/hostlist IMB-MPI1 Allreduce -iter 10000 -npmin $numberOfProcesses -msglog 3:4 -time 1000000'"
@@ -175,6 +176,7 @@ if [ "$execute_timeout" = true ]; then
 fi
 
 # run the benchmark function
+exectimeo=1800
 benchmarkData="{}"
 run_benchmark
 jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" >$LOGDIR/benchmark.json
