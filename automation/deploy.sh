@@ -124,6 +124,9 @@ telemetryData="$(jq ".clusterDeployment.sshretries=\"$retry\"" <<< $telemetryDat
 
 if [ "$working_hosts" -ne "$instanceCount" ]; then
         echo "Error: all hosts are not accessible with ssh."
+        execute "get_hostnames_with_azcli" az vmss list-instances --resource-group "$resource_group" --name "az${resource_group##*-}" | jq '.[].osProfile.computerName'
+        scp $(get_log get_hostnames_with_azcli) hpcuser@${public_ip}:bin/hostlist
+        execute "pdsh_hostname_looking_for_failure" ssh hpcuser@${public_ip} pdsh hostname
         telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
         clear_up
         exit 1
