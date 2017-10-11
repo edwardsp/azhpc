@@ -179,7 +179,7 @@ if [ "$execute_timeout" = true ]; then
 fi
 
 # run the benchmark function
-exectimeo=1800
+exectimeo=${benchmarkTimeout:-1800}
 benchmarkData="{}"
 run_benchmark
 jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" >$LOGDIR/benchmark.json
