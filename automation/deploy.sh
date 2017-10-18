@@ -27,7 +27,7 @@ LOGDIR=$rootLogDir/${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 
 # creating a new document with a unique id (intention to put in documentdb)
-telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\" }"
+telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\", \"parameterFile\" : \"${paramsname}\", \"benchmarkName\" : \"${benchmarkname}\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
