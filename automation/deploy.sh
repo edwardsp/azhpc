@@ -106,7 +106,7 @@ public_ip=$(az network public-ip list --resource-group "$resource_group" --query
 
 execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_group" --name "az${resource_group##*-}"
 # upload hostlist
-jq -r '.[].osProfile.computerName' $(getlog "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
+jq -r '.[].osProfile.computerName' $(get_log "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
 execute "check_host_status" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'echo Working'"
 working_hosts=$(grep "Working" $(get_log "check_host_status") | wc -l)
 if [ "$working_hosts" = "" ]; then
