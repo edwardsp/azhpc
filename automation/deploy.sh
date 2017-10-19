@@ -47,9 +47,36 @@ function clear_up {
 
 function check_hanging_nodes {       
         scenario=$1
+        jsonFailure=$LOGDIR/failure.json
+        tmpJson=$LOGDIR/tmp.json
+        # running pdsh 'hostname' will return the failed nodes
         execute "hanging_$scenario" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'hostname'"
-        cat $(get_log "hanging_$scenario") | jq -s -R 'split("\n") | map(select(contains("exited"))) | map(split(":")) | map({"hostname": .[1]|ltrimstr(" ")})' >$LOGDIR/tmp.json
-        jq -n '.failure.scenario=$scenario | .failure.nodes=$data ' --arg scenario "$scenario" --argfile data $LOGDIR/tmp.json >$LOGDIR/failure.json        
+        cat $(get_log "hanging_$scenario") | jq -s -R 'split("\n") | map(select(contains("exited"))) | map(split(":")) | map({"hostname": .[1]|ltrimstr(" ")})' >$tmpJson
+        jq -n '.failure.scenario=$scenario | .failure.nodes=$data ' --arg scenario "$scenario" --argfile data $tmpJson >$jsonFailure
+
+        # extract node instance id
+        nodes=$(jq -n '.nodes=[]')
+        for node in $(jq -r '.failure.nodes[] | .hostname' $jsonFailure); do
+                item=$(jq -n '.hostname=$node | .instanceid=$data' --arg node $node --arg data  `./scripts/base36ToDec ${node: -2}`)
+                nodes=$(jq '.nodes[.nodes| length] += $data' --argjson data "$item" <<< $nodes)
+        done
+
+        jq '.failure+=$nodes' --argjson nodes "$nodes" $jsonFailure > $tmpJson
+        cp $tmpJson $jsonFailure
+
+        # get blob logs
+        accountname=${vmssName}sa
+        sakey=$(az storage account keys list -n ${accountname} -g ${resource_group} | jq -r '.[] | select(.keyName == "key1") | .value')
+
+        for node in $(jq -r '.failure.nodes[] | .instanceid' $jsonFailure); do
+                serialLog=$(az vmss get-instance-view  --resource-group $resource_group --name $vmssName --instance-id $node | jq -r '.bootDiagnostics.serialConsoleLogBlobUri')
+                container=$(echo $serialLog | cut -d'/' -f4)
+                blobname=$(echo $serialLog | cut -d'/' -f5)
+
+                az storage blob download -c $container -f $LOGDIR/$blobname -n $blobname --account-key $sakey  --account-name $accountname
+                upload_blob $blobname
+        done
+
 }
 
 
