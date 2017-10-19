@@ -57,7 +57,7 @@ function check_hanging_nodes {
         # extract node instance id
         nodes=$(jq -n '.nodes=[]')
         for node in $(jq -r '.failure.nodes[] | .hostname' $jsonFailure); do
-                item=$(jq -n '.hostname=$node | .instanceid=$data' --arg node $node --arg data  `./scripts/base36ToDec ${node: -2}`)
+                item=$(jq -n '.hostname=$node | .instanceid=$id | .vmssnodename=$vmssName+"_"+$id' --arg node $node --arg vmssName $vmssName --arg id  `./scripts/base36ToDec ${node: -2}`)
                 nodes=$(jq '.nodes[.nodes| length] += $data' --argjson data "$item" <<< $nodes)
         done
 
