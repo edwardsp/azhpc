@@ -73,7 +73,7 @@ function check_hanging_nodes {
                 container=$(echo $serialLog | cut -d'/' -f4)
                 blobname=$(echo $serialLog | cut -d'/' -f5)
 
-                az storage blob download -c $container -f $LOGDIR/$blobname -n $blobname --account-key $sakey  --account-name $accountname
+                az storage blob download -c $container -f $LOGDIR/$blobname -n $blobname --account-key $sakey  --account-name $accountname 2>&1 > /dev/null || echo "Failed to download blob"
                 upload_blob $blobname
         done
 
