@@ -125,6 +125,13 @@ execute "deploy_azhpc" az group deployment create \
     --parameters "$parameters"
 
 deploymentTime=$(grep deploy_azhpc $LOGDIR/times.csv | cut -d',' -f2)
+errorToDeploy=$(grep "ERROR:" $(get_log "deploy_azhpc") | wc -l)
+if [ "$errorToDeploy" = "1" ]; then
+        echo "Failed to create VMSS"
+        telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
+        clear_up
+        exit 1
+fi
 
 telemetryData="$(jq '.vmSize=$data.properties.parameters.vmSku.value | .computeNodeImage=$data.properties.parameters.computeNodeImage.value | .instanceCount=$data.properties.parameters.instanceCount.value | .provisioningState=$data.properties.provisioningState | .deploymentTimestamp=$data.properties.timestamp | .correlationId=$data.properties.correlationId' --argjson data "$(<$(get_log "deploy_azhpc"))" <<< $telemetryData)"
 telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< $telemetryData)"
