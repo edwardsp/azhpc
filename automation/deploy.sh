@@ -138,7 +138,7 @@ telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< $
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
-execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_group" --name "az${resource_group##*-}"
+execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_group" --name "$vmssName"
 # upload hostlist
 jq -r '.[].osProfile.computerName' $(get_log "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
 execute "check_host_status" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'echo Working'"
