@@ -77,7 +77,7 @@ function upload_blob {
                         --account-name $logStorageAccountName \
                         --container-name $logStorageContainerName \
                         --file $LOGDIR/$fname \
-                        --name $logStoragePath/$LOGDIR/$fname \
+                        --name $logStoragePath/${LOGDIR##*/}/$fname \
                         --sas "$logStorageSasKey" \
                         2>&1 > /dev/null || echo "Failed to upload blob"
         fi
