@@ -27,7 +27,7 @@ LOGDIR=$rootLogDir/${scriptname}_${paramsname}_${benchmarkname}_${timestamp}
 mkdir $LOGDIR
 
 # creating a new document with a unique id (intention to put in documentdb)
-telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\" }"
+telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\", \"parameterFile\" : \"${paramsname}\", \"benchmarkName\" : \"${benchmarkname}\" }"
 
 function clear_up {
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
@@ -131,8 +131,11 @@ telemetryData="$(jq '.deploymentDuration=$data' --arg data $deploymentTime <<< $
 
 public_ip=$(az network public-ip list --resource-group "$resource_group" --query [0].dnsSettings.fqdn | sed 's/"//g')
 
-execute "get_hosts" ssh hpcuser@${public_ip} nmapForHosts
-working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts"))
+execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_group" --name "az${resource_group##*-}"
+# upload hostlist
+jq -r '.[].osProfile.computerName' $(get_log "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
+execute "check_host_status" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'echo Working'"
+working_hosts=$(grep "Working" $(get_log "check_host_status") | wc -l)
 if [ "$working_hosts" = "" ]; then
         echo "Failed to get hosts."
         telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
@@ -142,8 +145,8 @@ fi
 retry=1
 while [ "$retry" -lt "6" -a "$working_hosts" -ne "$instanceCount" ]; do
         sleep 60
-        execute "get_hosts_retry_$retry" ssh hpcuser@${public_ip} nmapForHosts
-        working_hosts=$(sed -n "s/.*sshin=\([^;]*\).*/\1/p" $(get_log "get_hosts_retry_$retry"))
+        execute "check_host_status_retry_$retry" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'echo Working'"
+        working_hosts=$(grep "Working" $(get_log "check_host_status_retry_$retry") | wc -l)
         let retry=$retry+1
 done
 
@@ -151,9 +154,6 @@ telemetryData="$(jq ".clusterDeployment.sshretries=\"$retry\"" <<< $telemetryDat
 
 if [ "$working_hosts" -ne "$instanceCount" ]; then
         echo "Error: all hosts are not accessible with ssh."
-        execute "get_hostnames_with_azcli" az vmss list-instances --resource-group "$resource_group" --name "az${resource_group##*-}" | jq -r '.[].osProfile.computerName'
-        scp $(get_log get_hostnames_with_azcli) hpcuser@${public_ip}:bin/hostlist
-        execute "pdsh_hostname_looking_for_failure" ssh hpcuser@${public_ip} pdsh hostname
         telemetryData="$(jq ".clusterDeployment.status=\"failed\"" <<< $telemetryData)"
         clear_up
         exit 1
@@ -206,7 +206,6 @@ if [ "$execute_timeout" = true ]; then
 fi
 
 # run the benchmark function
-exectimeo=1800
 benchmarkData="{}"
 run_benchmark
 jq -c -n '.benchmark=$data' --argjson data "$benchmarkData" >$LOGDIR/benchmark.json
