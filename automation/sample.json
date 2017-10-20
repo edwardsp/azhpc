@@ -1,5 +1,8 @@
 {
     "id": "3576bd9f-707a-46c9-be14-258d81b0a960",
+    "logDir": "deploy_xavier__2017-10-19_14-15-47",
+    "parameterFile": "xavier",
+    "benchmarkName": "",
     "subscription": "f5a67d06-2d09-4090-91cc-e3298907a021",
     "location": "northcentralus",
     "resourceGroup": "xpillons-azhpc-9ac3b1",
@@ -134,13 +137,14 @@
         "scenario": "allreduce",
         "nodes": [
             {
-                "hostname": "az9ac3b1000002"
+                "hostname": "azccddd5000000",
+                "instanceid": "0",
+                "vmssnodename": "azccddd5_0"
             },
             {
-                "hostname": "az9ac3b1000003"
-            },
-            {
-                "hostname": "az9ac3b1000004"
+                "hostname": "azccddd5000002",
+                "instanceid": "2",
+                "vmssnodename": "azccddd5_2"
             }
         ]
     },
