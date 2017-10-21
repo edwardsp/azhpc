@@ -30,6 +30,7 @@ mkdir $LOGDIR
 telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\", \"parameterFile\" : \"${paramsname}\", \"benchmarkName\" : \"${benchmarkname}\" }"
 
 function clear_up {
+	get_files '/var/lib/*'
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
 
         timingData=$(cat $LOGDIR/times.csv | jq -s -R 'split("\n") | map(select(. != "")) | map(split(",") | map(select(. != ""))) | map({"event": .[0],"duration": .[1]})')
