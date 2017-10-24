@@ -186,4 +186,6 @@ if [ "$execute_timeout" = true ]; then
         check_hanging_nodes "benchmark"
 fi
 
-clear_up
+if [ "$leaveRunning" != true ]; then
+        clear_up
+fi
