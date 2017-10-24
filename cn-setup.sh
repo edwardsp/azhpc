@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HEADNODE=10.0.0.4
+HEADNODE=10.0.2.4
 
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf
 umount /mnt/resource
