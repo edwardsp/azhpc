@@ -41,37 +41,17 @@ function execute {
         execute_duration=$SECONDS
         echo "$task,$execute_duration" | tee -a $LOGDIR/times.csv
 
-        if [ "$logToStorage" = true ]; then
-                az storage blob upload \
-                        --account-name $logStorageAccountName \
-                        --container-name $logStorageContainerName \
-                        --file $LOGDIR/$task.log \
-                        --name $logStoragePath/$LOGDIR/$task.log \
-                        --sas "$logStorageSasKey" \
-                        2>&1 > /dev/null || echo "Failed to upload blob" 
-                az storage blob upload \
-                        --account-name $logStorageAccountName \
-                        --container-name $logStorageContainerName \
-                        --file $LOGDIR/times.csv \
-                        --name $logStoragePath/$LOGDIR/times.csv \
-                        --sas "$logStorageSasKey" \
-                        2>&1 > /dev/null || echo "Failed to upload blob"
-        fi
+        upload_blob $task.log
+        upload_blob times.csv
+
         execute_timeout_duration=$execute_timeout_duration_default
 }
 
 
 function error_message {
         echo "ERROR: $1" | tee $LOGDIR/error.log
-        if [ "$logToStorage" = true ]; then
-                az storage blob upload \
-                        --account-name $logStorageAccountName \
-                        --container-name $logStorageContainerName \
-                        --file $LOGDIR/times.log \
-                        --name $logStoragePath/$LOGDIR/error.log \
-                        --sas "$logStorageSasKey" \
-                        2>&1 > /dev/null || echo "Failed to upload blob"
-        fi
+
+        upload_blob error.log
 }
 
 function get_files {
@@ -84,18 +64,26 @@ function get_files {
                                 continue
                         fi
                         scp -q hpcuser@${public_ip}:$fullpath $LOGDIR
-                        if [ "$logToStorage" = true ]; then
-                                az storage blob upload \
-                                        --account-name $logStorageAccountName \
-                                        --container-name $logStorageContainerName \
-                                        --file $LOGDIR/$fname \
-                                        --name $logStoragePath/$LOGDIR/$fname \
-                                        --sas "$logStorageSasKey" \
-                                        2>&1 > /dev/null || echo "Failed to upload blob"
-                        fi
+                        upload_blob $fname
                 done
         done
 }
+
+function upload_blob {
+        fname=$1
+
+        if [ "$logToStorage" = true ]; then
+                az storage blob upload \
+                        --account-name $logStorageAccountName \
+                        --container-name $logStorageContainerName \
+                        --file $LOGDIR/$fname \
+                        --name $logStoragePath/${LOGDIR##*/}/$fname \
+                        --sas "$logStorageSasKey" \
+                        2>&1 > /dev/null || echo "Failed to upload blob"
+        fi
+
+}
+
 
 function get_log {
 	task=$1
