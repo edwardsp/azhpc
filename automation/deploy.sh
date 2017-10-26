@@ -143,7 +143,7 @@ execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_
 jq -r '.[].osProfile.computerName' $(get_log "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
 
 # gather syslog and waagent logs
-execute "gather_logs" ssh hpcuser@${public_ip} "pdsh 'sudo cp /var/log/messages messages-\$(hostname) && sudo cp /var/log/waagent.log waagent-\$(hostname).log'"
+execute "gather_logs" ssh hpcuser@${public_ip} "pdsh 'sudo cat /var/log/messages > messages-\$(hostname) && sudo cat /var/log/waagent.log > waagent-\$(hostname).log'"
 get_files 'messages-*' 'waagent*.log'
 
 
