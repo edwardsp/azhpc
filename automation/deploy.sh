@@ -141,6 +141,12 @@ public_ip=$(az network public-ip list --resource-group "$resource_group" --query
 execute "get_vmss_instances" az vmss list-instances --resource-group "$resource_group" --name "$vmssName"
 # upload hostlist
 jq -r '.[].osProfile.computerName' $(get_log "get_vmss_instances") | ssh hpcuser@${public_ip} 'cat - >bin/hostlist'
+
+# gather syslog and waagent logs
+execute "gather_logs" ssh hpcuser@${public_ip} "pdsh 'sudo cp /var/log/messages messages-\$(hostname) && sudo cp /var/log/waagent.log waagent-\$(hostname).log'"
+get_files 'messages-*' 'waagent*.log'
+
+
 execute "check_host_status" ssh hpcuser@${public_ip} "pdsh -f $PDSH_MAX_CONNECTIONS 'echo Working'"
 working_hosts=$(grep "Working" $(get_log "check_host_status") | wc -l)
 if [ "$working_hosts" = "" ]; then
