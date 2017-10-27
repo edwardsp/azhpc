@@ -1,4 +1,4 @@
-required processesPerNode
+required_envvars processesPerNode
 
 function run_benchmark() {
     execute "run_hpcg_benchmark" ssh hpcuser@${public_ip} "wget -q 'https://paedwar.blob.core.windows.net/public/hpcg-bin.tgz' -O - | tar zx"
