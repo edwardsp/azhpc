@@ -6,6 +6,7 @@ function run_benchmark() {
     execute "download_surfboard_case" ssh hpcuser@${public_ip} "git clone https://github.com/edwardsp/surfboard.git"
     numProcs=$(bc <<< "$instanceCount * $processesPerNode")
     mpiArgs="-ppn $processesPerNode -hostfile \$HOME/bin/hostlist"
+    execute_timeout_duration=5400
     execute "run_surfboard_case" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd surfboard && ./run.sh \"$surfboardUrl\" $depth $roll $numProcs $numberOfIterations \"$mpiArgs\"'"
     rsync -az hpcuser@${public_ip}:surfboard $LOGDIR/.
 
