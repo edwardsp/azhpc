@@ -185,7 +185,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_D14_v2"
+					"vmSize": "Standard_H16"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
