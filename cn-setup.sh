@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# fail on any error
+set -e
+
 HEADNODE=10.0.2.4
 
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf
@@ -17,8 +20,8 @@ $HEADNODE:/home    /home   nfs defaults 0 0
 $HEADNODE:/mnt/resource/scratch    /mnt/resource/scratch   nfs defaults 0 0
 EOF
 
-yum --enablerepo=extras install -y -q epel-release || exit 1
-yum install -y -q nfs-utils htop pdsh psmisc || exit 1
+yum --enablerepo=extras install -y -q epel-release
+yum install -y -q nfs-utils htop pdsh psmisc
 setsebool -P use_nfs_home_dirs 1
 
 mount -a
