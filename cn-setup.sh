@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Exiting with non-zero error code"
+exit 1
+
 # fail on any error
 set -e
 
