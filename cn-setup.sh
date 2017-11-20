@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# fail on any error
+set -e
+
 HEADNODE=10.0.2.4
 
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf

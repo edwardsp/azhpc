@@ -185,7 +185,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_D14_v2"
+					"vmSize": "Standard_H16"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
@@ -282,7 +282,7 @@
 										"fileUris": [
 											"[uri(deployment().properties.templateLink.uri, 'cn-setup.sh')]"
 										],
-										"commandToExecute": "bash cn-setup.sh",
+										"commandToExecute": "bash cn-setup.sh || sleep 1800",
 										"timestamp": 12345
 									}
 								}
