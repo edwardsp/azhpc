@@ -16,7 +16,7 @@ function run_benchmark() {
     done
 
     execute_timeout_duration=${benchmarkTimeout:-1800}
-    execute "run_starccm_benchmark" ssh hpcuser@${public_ip} "starccm+ -np ${numProcs} -machinefile machinefile -power -podkey $podKey -rsh ssh -mpi intel -cpubind bandwidth,v -mppflags '-genv I_MPI_FABRICS shm:tcp' /mnt/resource/scratch/LeMans_100M.sim -benchmark:\"-preclear -preits 40 -nits 20 -nps $nps\""
+    execute "run_starccm_benchmark" ssh hpcuser@${public_ip} "export I_MPI_FABRICS=shm:tcp; unset I_MPI_DAPL_PROVIDER; unset I_MPI_DYNAMIC_CONNECTION; unset I_MPI_DAPL_TRANSLATION_CACHE; starccm+ -np ${numProcs} -machinefile machinefile -power -podkey $podKey -rsh ssh -mpi intel -cpubind bandwidth,v -mppflags '-genv I_MPI_FABRICS shm:tcp' /mnt/resource/scratch/LeMans_100M.sim -benchmark:\"-preclear -preits 40 -nits 20 -nps $nps\""
 
     get_files '*.xml' 
 
