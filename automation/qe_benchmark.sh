@@ -5,7 +5,7 @@ function run_benchmark() {
     
     numProcs=$(bc <<< "$instanceCount * $processesPerNode")
 
-    execute "run_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd /mnt/resource/scratch/qe/input && mpirun -np $numProcs -ppn $processesPerNode -genv LD_LIBRARY_PATH=/mnt/resource/scratch/qe/\$LD_LIBRARY_PATH -hostfile \$HOME/bin/hostlist ../pw.x -input pw_1.in'"
+    execute "run_benchmark_qe" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd /mnt/resource/scratch/qe/input && mpirun -np $numProcs -ppn $processesPerNode -env LD_LIBRARY_PATH /mnt/resource/scratch/qe/\$LD_LIBRARY_PATH -hostfile \$HOME/bin/hostlist ../pw.x -input pw_1.in'"
 
     benchmarkData="{}"
 }
