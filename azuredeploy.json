@@ -27,6 +27,7 @@
 			"type": "string",
 			"defaultValue": "CentOS-HPC_7.1",
 			"allowedValues": [
+				"CentOS-HPC_6.5",
 				"CentOS-HPC_6.8",
 				"CentOS-HPC_7.1",
 				"CentOS-HPC_7.3"
@@ -67,6 +68,12 @@
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
 		"hpcImageTypes":{
+			"CentOS-HPC_6.5": {
+				"publisher": "OpenLogic",
+				"offer": "CentOS-HPC",
+				"sku": "6.5",
+				"version": "latest"
+			},
 			"CentOS-HPC_6.8": {
 				"publisher": "OpenLogic",
 				"offer": "CentOS-HPC",
