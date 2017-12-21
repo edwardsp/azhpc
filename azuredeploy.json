@@ -296,7 +296,7 @@
 										"fileUris": [
 											"[uri(deployment().properties.templateLink.uri, 'cn-setup.sh')]"
 										],
-										"commandToExecute": "bash cn-setup.sh || sleep 1800",
+										"commandToExecute": "bash cn-setup.sh",
 										"timestamp": 12345
 									}
 								}
