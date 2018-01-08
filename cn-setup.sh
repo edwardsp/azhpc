@@ -32,10 +32,3 @@ mount -a
 echo "hpcuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Disable tty requirement for sudo
 sed -i 's/^Defaults[ ]*requiretty/# Defaults requiretty/g' /etc/sudoers
-
-for i in /proc/sys/kernel/sched_domain/cpu*/domain0
-do
-    echo "0" >${i}/idle_idx
-    echo "4655" >${i}/flags
-done
-
