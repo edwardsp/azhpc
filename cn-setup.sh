@@ -24,7 +24,10 @@ EOF
 
 #yum --enablerepo=extras install -y -q epel-release
 #yum install -y -q nfs-utils htop pdsh psmisc
-yum install -y -q nfs-utils
+until yum install -y -q nfs-utils
+do
+    sleep 10
+done
 setsebool -P use_nfs_home_dirs 1
 
 mount -a
