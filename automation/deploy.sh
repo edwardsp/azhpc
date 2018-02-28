@@ -30,6 +30,10 @@ mkdir $LOGDIR
 telemetryData="{ \"id\" : \"$(uuidgen)\", \"logDir\" : \"$(basename $LOGDIR)\", \"parameterFile\" : \"${paramsname}\", \"benchmarkName\" : \"${benchmarkname}\" }"
 
 function clear_up {
+        if [ "$leaveRunning" != true ]; then
+                return
+        fi
+
 	execute "delete_resource_group" az group delete --name "$resource_group" --yes
 
         timingData=$(cat $LOGDIR/times.csv | jq -s -R 'split("\n") | map(select(. != "")) | map(split(",") | map(select(. != ""))) | map({"event": .[0],"duration": .[1]})')
@@ -42,7 +46,7 @@ function clear_up {
 
         if [ "$logToStorage" = true ]; then
                 $DIR/cosmos_upload_doc.sh "$cosmos_account" "$cosmos_database" "$cosmos_collection" "$cosmos_key" "$LOGDIR/telemetry.json" >$LOGDIR/curl_upload_cosmosdb.result
-        fi
+        fi        
 }
 
 function check_hanging_nodes {       
@@ -226,6 +230,4 @@ if [ "$execute_timeout" = true ]; then
         check_hanging_nodes "benchmark"
 fi
 
-if [ "$leaveRunning" != true ]; then
-        clear_up
-fi
+clear_up
