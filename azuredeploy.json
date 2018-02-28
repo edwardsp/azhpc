@@ -30,7 +30,8 @@
 				"CentOS-HPC_6.5",
 				"CentOS-HPC_6.8",
 				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3"
+				"CentOS-HPC_7.3",
+				"SLES-HPC_12.SP1"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
@@ -91,6 +92,12 @@
 				"offer": "CentOS-HPC",
 				"sku": "7.3",
 				"version": "latest"
+			},
+			"SLES-HPC_12.SP1": {
+				"publisher": "SUSE",
+				"offer": "SLES-HPC",
+				"sku": "12-SP1",
+				"version": "2016.12.21"
 			},
 			"Ubuntu_1604": {
 				"publisher": "Canonical",

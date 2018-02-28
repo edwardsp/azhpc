@@ -11,6 +11,7 @@ computeNodeImage=CentOS-HPC_7.1
 instanceCount=4
 processesPerNode=16
 rsaPublicKey=$(cat ~/.ssh/id_rsa.pub)
+leaveRunning=false
 
 numberOfNodesToTest="8 16"
 podKey=
