@@ -102,6 +102,8 @@ EOF
 chown $USER:$USER /home/$USER/.screenrc
 
 cd /home/$USER
+echo $1 > debug.log
+echo "git clone -b $githubBranch https://github.com/$githubUser/$githubRepo.git" >> debug.log
 git clone -b $githubBranch https://github.com/$githubUser/$githubRepo.git
 chown $USER:$USER -R azhpc
 chmod +x azhpc/scripts/*
