@@ -30,7 +30,8 @@
 				"CentOS-HPC_6.5",
 				"CentOS-HPC_6.8",
 				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3"
+				"CentOS-HPC_7.3",
+				"CentOS-HPC_7.4"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
@@ -90,6 +91,12 @@
 				"publisher": "OpenLogic",
 				"offer": "CentOS-HPC",
 				"sku": "7.3",
+				"version": "latest"
+			},
+			"CentOS-HPC_7.4": {
+				"publisher": "OpenLogic",
+				"offer": "CentOS-HPC",
+				"sku": "7.4",
 				"version": "latest"
 			},
 			"Ubuntu_1604": {
