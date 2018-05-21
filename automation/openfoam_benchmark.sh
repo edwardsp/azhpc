@@ -9,8 +9,12 @@ function run_benchmark() {
 
     # set one extra iteration to run as we will calculate by taking the end of last iteration minus the end of first iteration (therefore no IO)
     niters=$(bc <<< "$numberOfIterations + 1")
+    if [ "$runPotentialFoam" = true ]; then
+        execute "run_potentialFoam" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist potentialFoam -parallel'"
+    fi
     execute "run_openfoam_benchmark" ssh hpcuser@${public_ip} "ssh \$(head -n1 bin/hostlist) 'cd $benchmarkName && sed -i \"s/^endTime .*;$/endTime ${niters};/g\" system/controlDict && mpirun -np $numProcs -ppn $processesPerNode -hostfile \$HOME/bin/hostlist simpleFoam -parallel'"
-
+    
+    
     of_logfile=$(get_log run_openfoam_benchmark)
     start_time=$(grep ExecutionTime $of_logfile | head -n1 | cut -d' ' -f8)
     end_time=$(grep ExecutionTime $of_logfile | tail -n1 | cut -d' ' -f8)

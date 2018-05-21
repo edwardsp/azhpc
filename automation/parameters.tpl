@@ -42,3 +42,4 @@ storageContainerName=azhpc
 storageBenchmarkPath=benchmarks
 storageBenchmarkName=motorbike82M
 storageSasKey=
+runPotentialFoam=
