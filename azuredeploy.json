@@ -3,12 +3,8 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"vmSku": {
-			"defaultValue": "Standard_H16r",
+			"defaultValue": "Standard_NC24r",
 			"allowedValues": [
-				"Standard_A8",
-				"Standard_A9",
-				"Standard_H16r",
-				"Standard_H16mr",
 				"Standard_NC24r"
 			],
 			"type": "String",
@@ -21,20 +17,6 @@
 			"type": "String",
 			"metadata": {
 				"description": "String used as a base for naming resources. Must be 3-10 characters in length and globally unique across Azure. A hash is prepended to this string for some resources, and resource-specific information is appended."
-			}
-		},
-		"computeNodeImage": {
-			"type": "string",
-			"defaultValue": "CentOS-HPC_7.1",
-			"allowedValues": [
-				"CentOS-HPC_6.5",
-				"CentOS-HPC_6.8",
-				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3",
-				"CentOS-HPC_7.4"
-			],
-			"metadata": {
-				"description": "The VM image of the compute nodes"
 			}
 		},
 		"instanceCount": {
@@ -68,52 +50,9 @@
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
-		"hpcImageTypes":{
-			"CentOS-HPC_6.5": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.5",
-				"version": "latest"
-			},
-			"CentOS-HPC_6.8": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.8",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.1": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.1",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.3": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.3",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.4": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.4",
-				"version": "latest"
-			},
-			"Ubuntu_1604": {
-				"publisher": "Canonical",
-				"offer": "UbuntuServer",
-				"sku": "16.04-LTS",
-				"version": "latest"
-			}
+		"imageReference": {
+			"id": "/subscriptions/f5a67d06-2d09-4090-91cc-e3298907a021/resourceGroups/paul-pfn-images/providers/Microsoft.Compute/images/paulpfn-image-20180619093834"
 		},
-		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
-		"JBoxType": {
-			"publisher": "OpenLogic",
-			"offer": "CentOS",
-			"sku": "7.1",
-			"version": "latest"
-		},
-		"JBimageReference": "[variables('JBoxType')]",
 		"computeApiVersion": "2016-04-30-preview",
 		"networkApiVersion": "2016-03-30",
 		"storageApiVersion": "2016-01-01"
@@ -206,7 +145,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_H16"
+					"vmSize": "Standard_NC24r"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
@@ -224,7 +163,7 @@
 					}
 				},
 				"storageProfile": {
-					"imageReference": "[variables('JBimageReference')]",
+					"imageReference": "[variables('imageReference')]",
 					"osDisk": {
 						"createOption": "FromImage"
 					}

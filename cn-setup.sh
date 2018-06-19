@@ -8,6 +8,8 @@ HEADNODE=10.0.2.4
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf
 umount /mnt/resource
 
+alternatives --set python /usr/bin/python3.4
+
 mkdir -p /mnt/resource/scratch
 
 cat << EOF >> /etc/security/limits.conf
@@ -22,13 +24,8 @@ $HEADNODE:/home    /home   nfs defaults 0 0
 $HEADNODE:/mnt/resource/scratch    /mnt/resource/scratch   nfs defaults 0 0
 EOF
 
-#yum --enablerepo=extras install -y -q epel-release
-#yum install -y -q nfs-utils htop pdsh psmisc
-until yum install -y -q nfs-utils
-do
-    sleep 10
-done
-setsebool -P use_nfs_home_dirs 1
+# selinux should be disabled
+#setsebool -P use_nfs_home_dirs 1
 
 mount -a
 
