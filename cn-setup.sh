@@ -8,7 +8,7 @@ HEADNODE=10.0.2.4
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf
 umount /mnt/resource
 
-alternatives --set python /usr/bin/python3.4
+#alternatives --set python /usr/bin/python3.4
 
 mkdir -p /mnt/resource/scratch
 

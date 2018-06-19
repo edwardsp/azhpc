@@ -18,7 +18,7 @@ EOF
 mkdir -p /mnt/resource/scratch
 chmod a+rwx /mnt/resource/scratch
 
-alternatives --set python /usr/bin/python3.4
+#alternatives --set python /usr/bin/python3.4
 
 cat << EOF >> /etc/exports
 /home $localip.*(rw,sync,no_root_squash,no_all_squash)
