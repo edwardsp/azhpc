@@ -3,13 +3,9 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"vmSku": {
-			"defaultValue": "Standard_H16r",
+			"defaultValue": "Standard_HB60rs",
 			"allowedValues": [
-				"Standard_A8",
-				"Standard_A9",
-				"Standard_H16r",
-				"Standard_H16mr",
-				"Standard_NC24r"
+                "Standard_HB60rs"
 			],
 			"type": "String",
 			"metadata": {
@@ -25,13 +21,9 @@
 		},
 		"computeNodeImage": {
 			"type": "string",
-			"defaultValue": "CentOS-HPC_7.1",
+			"defaultValue": "CentOS-7.5",
 			"allowedValues": [
-				"CentOS-HPC_6.5",
-				"CentOS-HPC_6.8",
-				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3",
-				"CentOS-HPC_7.4"
+				"CentOS-7.5"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
@@ -69,40 +61,10 @@
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
 		"hpcImageTypes":{
-			"CentOS-HPC_6.5": {
+			"CentOS-7.5": {
 				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.5",
-				"version": "latest"
-			},
-			"CentOS-HPC_6.8": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.8",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.1": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.1",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.3": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.3",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.4": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.4",
-				"version": "latest"
-			},
-			"Ubuntu_1604": {
-				"publisher": "Canonical",
-				"offer": "UbuntuServer",
-				"sku": "16.04-LTS",
+				"offer": "CentOS",
+				"sku": "7.5",
 				"version": "latest"
 			}
 		},
@@ -110,7 +72,7 @@
 		"JBoxType": {
 			"publisher": "OpenLogic",
 			"offer": "CentOS",
-			"sku": "7.1",
+			"sku": "7.5",
 			"version": "latest"
 		},
 		"JBimageReference": "[variables('JBoxType')]",
@@ -118,7 +80,7 @@
 		"networkApiVersion": "2016-03-30",
 		"storageApiVersion": "2016-01-01"
 	},
-	"resources": [	
+	"resources": [
 		{
 			"type": "Microsoft.Storage/storageAccounts",
 			"sku": {
@@ -206,7 +168,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_H16"
+					"vmSize": "Standard_HB60rs"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
