@@ -44,14 +44,6 @@ mkdir -p /home/$USER/bin
 chown $USER:$USER /home/$USER/bin
 
 cat << EOF >> /home/$USER/.bashrc
-if [ -d "/opt/intel/impi" ]; then
-    source /opt/intel/impi/*/bin64/mpivars.sh
-fi
-export PATH=/home/$USER/bin:\$PATH
-export I_MPI_FABRICS=shm:dapl
-export I_MPI_DAPL_PROVIDER=ofa-v2-ib0
-export I_MPI_DYNAMIC_CONNECTION=0
-export I_MPI_DAPL_TRANSLATION_CACHE=0
 export WCOLL=/home/$USER/bin/hostlist
 EOF
 chown $USER:$USER /home/$USER/.bashrc
