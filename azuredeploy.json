@@ -69,7 +69,7 @@
 				"version": "latest"
 			},
 			"Paul-SCUS-CentOS76": {
-				"id": "hbimage-image-20190108182401"
+				"id": "/subscriptions/f5a67d06-2d09-4090-91cc-e3298907a021/resourceGroups/paul-hbdebug/providers/Microsoft.Compute/images/hbimage-image-20190108182401"
 			}
 		},
 		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
