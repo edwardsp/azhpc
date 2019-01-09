@@ -23,7 +23,8 @@
 			"type": "string",
 			"defaultValue": "CentOS-7.5",
 			"allowedValues": [
-				"CentOS-7.5"
+				"CentOS-7.5",
+				"Paul-SCUS-CentOS76"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
@@ -66,6 +67,9 @@
 				"offer": "CentOS",
 				"sku": "7.5",
 				"version": "latest"
+			},
+			"Paul-SCUS-CentOS76": {
+				"id": "hbimage-image-20190108182401"
 			}
 		},
 		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
