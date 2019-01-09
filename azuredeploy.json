@@ -173,7 +173,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_HB60rs"
+					"vmSize": "[parameters('vmSku')]"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
