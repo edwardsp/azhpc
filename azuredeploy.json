@@ -5,7 +5,8 @@
 		"vmSku": {
 			"defaultValue": "Standard_HB60rs",
 			"allowedValues": [
-                "Standard_HB60rs"
+                		"Standard_HB60rs",
+				"Standard_HC44rs"
 			],
 			"type": "String",
 			"metadata": {
