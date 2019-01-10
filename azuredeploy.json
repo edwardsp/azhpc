@@ -239,9 +239,7 @@
 						"osDisk": {
 							"createOption": "FromImage"
 						},
-						"imageReference": {
-							"id": "[variables('imageReference')]"
-						}
+						"imageReference": "[variables('imageReference')]"
 					},
 					"osProfile": {
 						"computerNamePrefix": "[variables('namingInfix')]",
