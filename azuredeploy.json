@@ -9,7 +9,8 @@
 				"Standard_A9",
 				"Standard_H16r",
 				"Standard_H16mr",
-				"Standard_NC24r"
+				"Standard_NC24r",
+                "Standard_NC24rs_v3"
 			],
 			"type": "String",
 			"metadata": {
