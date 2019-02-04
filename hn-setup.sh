@@ -21,13 +21,13 @@ mkdir -p /mnt/resource/scratch
 chmod a+rwx /mnt/resource/scratch
 
 yum --enablerepo=extras install -y -q epel-release
-yum install -y -q nfs-utils nmap htop pdsh screen git axel 
+yum install -y -q nfs-utils nmap htop pdsh screen git axel
 # need to update for git work
 yum update -y nss curl libcurl
 
 cat << EOF >> /etc/exports
-/home $localip.*(rw,sync,no_root_squash,no_all_squash)
-/mnt/resource/scratch $localip.*(rw,sync,no_root_squash,no_all_squash)
+/home 10.0.2.0/23(rw,sync,no_root_squash,no_all_squash)
+/mnt/resource/scratch 10.0.2.0/23(rw,sync,no_root_squash,no_all_squash)
 EOF
 
 systemctl enable rpcbind
