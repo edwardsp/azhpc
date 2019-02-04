@@ -25,16 +25,8 @@
 		},
 		"computeNodeImage": {
 			"type": "string",
-			"defaultValue": "CentOS-HPC_7.1",
-			"allowedValues": [
-				"CentOS-HPC_6.5",
-				"CentOS-HPC_6.8",
-				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3",
-				"CentOS-HPC_7.4"
-			],
 			"metadata": {
-				"description": "The VM image of the compute nodes"
+				"description": "The URL for the image"
 			}
 		},
 		"instanceCount": {
@@ -59,7 +51,7 @@
 		"jumpBoxIPConfigName": "[concat(variables('jumpBoxName'), 'ipconfig')]",
 		"jumpBoxNicName": "[concat(variables('jumpBoxName'), 'nic')]",
 		"addressPrefix": "10.0.0.0/16",
-		"subnetPrefix": "10.0.2.0/24",
+		"subnetPrefix": "10.0.2.0/23",
 		"virtualNetworkName": "[concat(variables('namingInfix'), 'vnet')]",
 		"subnetName": "[concat(variables('namingInfix'), 'subnet')]",
 		"vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
@@ -68,57 +60,14 @@
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
-		"hpcImageTypes":{
-			"CentOS-HPC_6.5": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.5",
-				"version": "latest"
-			},
-			"CentOS-HPC_6.8": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.8",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.1": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.1",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.3": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.3",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.4": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.4",
-				"version": "latest"
-			},
-			"Ubuntu_1604": {
-				"publisher": "Canonical",
-				"offer": "UbuntuServer",
-				"sku": "16.04-LTS",
-				"version": "latest"
-			}
+		"imageReference": {
+			"id": "[parameters('computeNodeImage')]"
 		},
-		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
-		"JBoxType": {
-			"publisher": "OpenLogic",
-			"offer": "CentOS",
-			"sku": "7.1",
-			"version": "latest"
-		},
-		"JBimageReference": "[variables('JBoxType')]",
 		"computeApiVersion": "2016-04-30-preview",
 		"networkApiVersion": "2016-03-30",
 		"storageApiVersion": "2016-01-01"
 	},
-	"resources": [	
+	"resources": [
 		{
 			"type": "Microsoft.Storage/storageAccounts",
 			"sku": {
@@ -206,7 +155,7 @@
 			"location": "[variables('resourceLocation')]",
 			"properties": {
 				"hardwareProfile": {
-					"vmSize": "Standard_H16"
+					"vmSize": "[parameters('vmSku')]"
 				},
 				"osProfile": {
 					"computerName": "[variables('jumpBoxName')]",
@@ -224,11 +173,11 @@
 					}
 				},
 				"storageProfile": {
-					"imageReference": "[variables('JBimageReference')]",
-					"osDisk": {
-						"createOption": "FromImage"
-					}
-				},
+						"osDisk": {
+							"createOption": "FromImage"
+						},
+						"imageReference": "[variables('imageReference')]"
+                },
 				"networkProfile": {
 					"networkInterfaces": [
 						{
