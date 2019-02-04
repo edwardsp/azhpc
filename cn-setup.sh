@@ -5,6 +5,11 @@ set -e
 
 HEADNODE=10.0.2.4
 
+# Don't require password for HPC user sudo
+echo "hpcuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+# Disable tty requirement for sudo
+sed -i 's/^Defaults[ ]*requiretty/# Defaults requiretty/g' /etc/sudoers
+
 sed -i 's/^ResourceDisk.MountPoint=\/mnt\/resource$/ResourceDisk.MountPoint=\/mnt\/local_resource/g' /etc/waagent.conf
 umount /mnt/resource
 
@@ -32,7 +37,3 @@ setsebool -P use_nfs_home_dirs 1
 
 mount -a
 
-# Don't require password for HPC user sudo
-echo "hpcuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-# Disable tty requirement for sudo
-sed -i 's/^Defaults[ ]*requiretty/# Defaults requiretty/g' /etc/sudoers
