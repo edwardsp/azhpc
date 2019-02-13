@@ -89,13 +89,6 @@ WCOLL=${name}_master_node.txt pdsh sudo mkdir /mnt/mgsmds
 WCOLL=${name}_master_node.txt pdsh 'echo "/dev/nvme0n1 /mnt/mgsmds lustre noatime,nodiratime,nobarrier 0 2" | sudo tee -a /etc/fstab'
 WCOLL=${name}_master_node.txt pdsh sudo mount -a
 
-for node in $(<${name}_all_nodes.txt); do
-    scp tmp_setup_master.sh $node:.
-done
-
-WCOLL=${name}_master_node.txt pdsh chmod +x ./tmp_setup_master.sh
-WCOLL=${name}_master_node.txt pdsh sudo ./tmp_setup_master.sh
-
 let N=0
 for oss_node in $(<${name}_oss_nodes.txt); do
 
