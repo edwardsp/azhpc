@@ -11,8 +11,8 @@
 				"Standard_H16mr",
 				"Standard_NC24r",
 				"Standard_NC24rs_v3",
-				"Standard_HB60_rs",
-				"Standard_HC44_rs"
+				"Standard_HB60rs",
+				"Standard_HC44rs"
 			],
 			"type": "String",
 			"metadata": {
