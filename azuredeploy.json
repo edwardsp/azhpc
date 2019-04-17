@@ -3,7 +3,7 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"vmSku": {
-			"defaultValue": "Standard_HB60_rs",
+			"defaultValue": "Standard_HB60rs",
 			"allowedValues": [
 				"Standard_A8",
 				"Standard_A9",
