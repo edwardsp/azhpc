@@ -3,14 +3,16 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"vmSku": {
-			"defaultValue": "Standard_H16r",
+			"defaultValue": "Standard_HB60_rs",
 			"allowedValues": [
 				"Standard_A8",
 				"Standard_A9",
 				"Standard_H16r",
 				"Standard_H16mr",
 				"Standard_NC24r",
-				"Standard_NC24rs_v3"
+				"Standard_NC24rs_v3",
+				"Standard_HB60_rs",
+				"Standard_HC44_rs"
 			],
 			"type": "String",
 			"metadata": {
@@ -26,13 +28,11 @@
 		},
 		"computeNodeImage": {
 			"type": "string",
-			"defaultValue": "CentOS-HPC_7.1",
+			"defaultValue": "CentOS-HPC_7.6",
 			"allowedValues": [
-				"CentOS-HPC_6.5",
-				"CentOS-HPC_6.8",
 				"CentOS-HPC_7.1",
-				"CentOS-HPC_7.3",
-				"CentOS-HPC_7.4"
+				"CentOS-HPC_7.4",
+				"CentOS-HPC_7.6"
 			],
 			"metadata": {
 				"description": "The VM image of the compute nodes"
@@ -59,6 +59,7 @@
 		"storageName": "[concat(variables('namingInfix'),'sa')]",
 		"jumpBoxIPConfigName": "[concat(variables('jumpBoxName'), 'ipconfig')]",
 		"jumpBoxNicName": "[concat(variables('jumpBoxName'), 'nic')]",
+		"jumpBoxNSGName": "[concat(variables('jumpBoxName'), 'nsg')]",
 		"addressPrefix": "10.0.0.0/16",
 		"subnetPrefix": "10.0.2.0/24",
 		"virtualNetworkName": "[concat(variables('namingInfix'), 'vnet')]",
@@ -69,29 +70,11 @@
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
 		"nicName": "[concat(variables('namingInfix'), 'nic')]",
 		"ipConfigName": "[concat(variables('namingInfix'), 'ipconfig')]",
-		"hpcImageTypes":{
-			"CentOS-HPC_6.5": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.5",
-				"version": "latest"
-			},
-			"CentOS-HPC_6.8": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "6.8",
-				"version": "latest"
-			},
+		"hpcImageTypes": {
 			"CentOS-HPC_7.1": {
 				"publisher": "OpenLogic",
 				"offer": "CentOS-HPC",
 				"sku": "7.1",
-				"version": "latest"
-			},
-			"CentOS-HPC_7.3": {
-				"publisher": "OpenLogic",
-				"offer": "CentOS-HPC",
-				"sku": "7.3",
 				"version": "latest"
 			},
 			"CentOS-HPC_7.4": {
@@ -100,26 +83,20 @@
 				"sku": "7.4",
 				"version": "latest"
 			},
-			"Ubuntu_1604": {
-				"publisher": "Canonical",
-				"offer": "UbuntuServer",
-				"sku": "16.04-LTS",
+			"CentOS-HPC_7.6": {
+				"publisher": "OpenLogic",
+				"offer": "CentOS-HPC",
+				"sku": "7.6",
 				"version": "latest"
 			}
 		},
 		"imageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
-		"JBoxType": {
-			"publisher": "OpenLogic",
-			"offer": "CentOS",
-			"sku": "7.1",
-			"version": "latest"
-		},
-		"JBimageReference": "[variables('JBoxType')]",
+		"JBimageReference": "[variables('hpcImageTypes')[parameters('computeNodeImage')]]",
 		"computeApiVersion": "2016-04-30-preview",
 		"networkApiVersion": "2016-03-30",
 		"storageApiVersion": "2016-01-01"
 	},
-	"resources": [	
+	"resources": [
 		{
 			"type": "Microsoft.Storage/storageAccounts",
 			"sku": {
@@ -175,6 +152,31 @@
 			}
 		},
 		{
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"apiVersion": "[variables('networkApiVersion')]",
+			"name": "[variables('jumpBoxNSGName')]",
+			"location": "[variables('resourceLocation')]",
+			"dependsOn": [],
+			"tags": {},
+			"properties": {
+				"securityRules": [
+					{
+						"name": "default-allow-ssh",
+						"properties": {
+							"protocol": "Tcp",
+							"sourcePortRange": "*",
+							"destinationPortRange": "22",
+							"sourceAddressPrefix": "*",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 1000,
+							"direction": "Inbound"
+						}
+					}
+				]
+			}
+		},
+		{
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[variables('jumpBoxNicName')]",
 			"apiVersion": "[variables('networkApiVersion')]",
@@ -197,7 +199,8 @@
 			},
 			"dependsOn": [
 				"[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+				"[concat('Microsoft.Network/networkSecurityGroups/', variables('jumpBoxNSGName'))]"
 			]
 		},
 		{
